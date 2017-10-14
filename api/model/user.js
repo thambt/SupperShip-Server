@@ -1,4 +1,5 @@
 var mongoose=require("mongoose");
+const config = require('../config/database');
 
 var schema = mongoose.Schema;
 var frameUser= new schema({

@@ -7,6 +7,8 @@ var session = require('express-session');
 var passport = require('passport');
 var userControllers = require("./api/controller/userController");
 var bussinessController = require("./api/controller/bussinessController");
+const config = require('./api/config/database');
+
 
 var app = express();
 var port = process.env.PORT || 3000;
@@ -31,7 +33,7 @@ var Users = require('./api/model/user')
 
 app.set("view engine", "ejs");
 
-mongoose.connect('mongodb://localhost/SupperShip');
+mongoose.connect(config.database);
 
 userControllers(app, passport);
 bussinessController(app,passport, io);
