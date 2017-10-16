@@ -11,7 +11,7 @@ const config = require('./api/config/database');
 
 
 var app = express();
-var port=Number(process.env.PORT || 3000);
+var port = process.env.PORT || 3000;
 
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
