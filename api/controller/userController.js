@@ -62,7 +62,7 @@ module.exports = function (app, passport) {
         })
     })
 
-    // Login
+    /* // Login
     app.get("user/login/:email/:pass", function (req, res) {
         user.findOne({ email: req.params.email }, function (err, result) {
             if (result == null)
@@ -74,7 +74,7 @@ module.exports = function (app, passport) {
                     res.json({ "resNumber": 0 });
             }
         })
-    });
+    }); */
 
     // update user
     app.post("/user/updateUser", function (req, res) {

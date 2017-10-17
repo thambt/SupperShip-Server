@@ -37,7 +37,7 @@ mongoose.connect(config.database);
 
 userControllers(app, passport);
 bussinessController(app,passport, io);
-app.get("user/login/:email/:pass", function (req, res) {
+app.get("/user/login/:email/:pass", function (req, res) {
         Users.findOne({ email: req.params.email }, function (err, result) {
             if (result == null)
                 res.json({ "resNumber": -1 });
