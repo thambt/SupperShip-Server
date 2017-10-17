@@ -37,19 +37,6 @@ mongoose.connect(config.database);
 
 userControllers(app, passport);
 bussinessController(app,passport, io);
-app.get("/user/login/:email/:pass", function (req, res) {
-        Users.findOne({ email: req.params.email }, function (err, result) {
-            if (result == null)
-                res.json({ "resNumber": -1 });
-            else {
-                if (result.password == req.params.pass)
-                    res.json({ "resNumber": 1, "user": result })
-                else
-                    res.json({ "resNumber": 0 });
-            }
-        })
-    });
-
 
 http.listen(port, function () {
     console.log("Server is connecting in port: " + port);

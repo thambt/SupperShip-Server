@@ -62,8 +62,8 @@ module.exports = function (app, passport) {
         })
     })
 
-    /* // Login
-    app.get("user/login/:email/:pass", function (req, res) {
+    // Login
+    app.get("/user/login/:email/:pass", function (req, res) {
         user.findOne({ email: req.params.email }, function (err, result) {
             if (result == null)
                 res.json({ "resNumber": -1 });
@@ -74,7 +74,7 @@ module.exports = function (app, passport) {
                     res.json({ "resNumber": 0 });
             }
         })
-    }); */
+    });
 
     // update user
     app.post("/user/updateUser", function (req, res) {
