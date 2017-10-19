@@ -36,6 +36,16 @@ module.exports = function (app, passport, io) {
         })
     })
 
+     // get Product by _id: 
+     app.get("/user/getProductById/:id", function (req, res) {
+        product.findById( req.params.id,function (err, result) {
+            if (err)
+                res.json({ "status": false })
+            else
+                res.json({ "product": result });
+        })
+    })
+
     // Update quantity product: 
     app.post("/shop/updateNumPro", function (req, res) {
         product.update({ id: req.body.id },
