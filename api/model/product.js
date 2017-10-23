@@ -1,4 +1,5 @@
 var mongoose=require("mongoose");
+var color = require("./color")
 
 var schema = mongoose.Schema;
 var frameProduct= new schema({
@@ -12,7 +13,7 @@ var frameProduct= new schema({
     weight: String,
     name: String,
     detail: String,
-    color:String,
+    color:[color],
     guarantee: { type: String, default: "0" }
 });
 var produce=mongoose.model("products",frameProduct);
