@@ -13,11 +13,11 @@ var frameProduct= new schema({
     weight: String,
     name: String,
     detail: String,
-    color:[
+    color:{type:[
         {
             nameC:String,
             quantityC: { type: String, default: "1" }}
-    ],
+    ]},
     guarantee: { type: String, default: "0" }
 });
 var produce=mongoose.model("products",frameProduct);
