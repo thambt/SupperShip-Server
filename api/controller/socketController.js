@@ -28,7 +28,7 @@ module.exports = function (io) {
         })
         socket.on("cBuy", function(arrProduct, userCustomer) {
             console.log(arrProduct)
-             Array.from(arrProduct).forEach(function(element) {
+            arrProduct.forEach(function(element) {
                   console.log(element)
                /* product.findById(element._id,function(result, err){
                     if(!result) {
