@@ -64,6 +64,7 @@ module.exports = function (app, passport) {
 
     // Login
     app.get("/user/login/:email/:pass", function (req, res) {
+        console.log("aaaaaaaaceferb")
         user.findOne({ email: req.params.email }, function (err, result) {
             if (result == null)
                 res.json({ "resNumber": -1 });
