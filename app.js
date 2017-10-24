@@ -5,8 +5,10 @@ var passport = require("passport");
 var LocalStrategy = require('passport-local').Strategy;
 var session = require('express-session');
 var passport = require('passport');
+var io = require('socket.io')(http);
 var userControllers = require("./api/controller/userController");
 var bussinessController = require("./api/controller/bussinessController");
+var socketController= require("./api/controller/socketController")
 const config = require('./api/config/database');
 
 
@@ -37,6 +39,7 @@ mongoose.connect(config.database);
 
 userControllers(app, passport);
 bussinessController(app,passport, io);
+socketController(io);
 
 http.listen(port, function () {
     console.log("Server is connecting in port: " + port);
