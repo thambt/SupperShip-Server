@@ -27,14 +27,14 @@ module.exports = function (io) {
             console.log(socket.id + " disconnect");
         })
         socket.on("cBuy", function(arrProduct, userCustomer) {
-            console.log("cBuy evetn on")
-            arrProduct.forEach(function(element) {
+            console.log(arrProduct)
+            /* arrProduct.forEach(function(element) {
                 product.findById(element._id,function(result, err){
                     if(!result) {
                         socket.broadcast.emit("SopNewBill", {"userCustomer" : userCustomer, "isProduct" : element._id,"idShop": result._id})
                     }
                 })
-            })
+            }) */
         })
     })
 }
