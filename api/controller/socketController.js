@@ -3,6 +3,7 @@ var bill = require("../model/bill")
 var product = require("../model/product")
 
 var socketID = new Array();
+var check = 0;
 module.exports = function (io) {
     io.sockets.on('connection', function (socket) {
         console.log("co nguoi ket noi");
