@@ -27,12 +27,12 @@ module.exports = function (io) {
             console.log(socket.id + " disconnect");
         })
         socket.on("cBuy", function(arrProduct, userCustomer) {
-            console.log(userCustomer)
+            console.log(arrProduct)
             Array.from(arrProduct).forEach(function(element) {
                   console.log(element)
                product.findById(element._id,function(result, err){
                     if(!result) {
-                        socket.broadcast.emit("SopNewBill", {"userCustomer" : userCustomer, "idProduct" : element._id,"idShop": result._id, "quantity": element.quantity})
+                        socket.broadcast.emit("SopNewBill", {"userCustomer" : userCustomer, "isProduct" : element._id,"idShop": result._id})
                     }
                 })
             }) 
