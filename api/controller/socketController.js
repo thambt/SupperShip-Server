@@ -30,11 +30,11 @@ module.exports = function (io) {
             console.log(arrProduct)
             Array.from(arrProduct).forEach(function(element) {
                   console.log(element)
-               /* product.findById(element._id,function(result, err){
+               product.findById(element._id,function(result, err){
                     if(!result) {
-                        socket.broadcast.emit("SopNewBill", {"userCustomer" : userCustomer, "isProduct" : element._id,"idShop": result._id})
+                        socket.broadcast.emit("SopNewBill", {"userCustomer" : userCustomer, "idProduct" : element._id,"emailShop": element.emailShop, "quantity": element.quantity})
                     }
-                })*/
+                })
             }) 
         })
     })
