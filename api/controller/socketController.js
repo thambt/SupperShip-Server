@@ -33,7 +33,7 @@ module.exports = function (io) {
                   product.findById( element._id,function (err, result) {
                     if (!err)
                     {
-                        socket.broadcast.emit("SopNewBill", {"userCustomer" : JSON.stringify(userCustomer), "idProduct" : element._id,"emailShop": result.emailShop})
+                        socket.broadcast.emit("SopNewBill", { "idProduct" : element._id,"emailShop": result.emailShop})
                     }
                 })
                /* product.findById(element._id,function(result, err){
