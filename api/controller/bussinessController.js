@@ -147,6 +147,14 @@ module.exports = function (app, passport, io) {
     })
 
 
+    //============= get temp bill for shop============
+    app.get("/shop/getBillTemp/:email", function (req, res) {
+        bill.find({ emailShop: { $regex: "^" + req.params.email } }, {status : {$regex: "^" + 0}},function (err, result) {
+            res.json({ "arrBill": result });
+        })
+    })
+    //================================================
+
     // Delete Bill:
     app.get("/shop/deleteBill/:id", function (req, res) {
         bill.remove({ "id": req.params.id }, function (err, result) {
@@ -155,5 +163,7 @@ module.exports = function (app, passport, io) {
             }
         })
     })
+
+
 }
 //==================================================================================

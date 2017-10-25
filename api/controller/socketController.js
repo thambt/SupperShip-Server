@@ -33,15 +33,30 @@ module.exports = function (io) {
                   product.findById( element._id,function (err, result) {
                     if (!err)
                     {
-                        socket.broadcast.emit("SopNewBill", {"emailCustom": userCustomer.email,"phoneCustomer": userCustomer.phone,"addressCustoemr": userCustomer.address ,"idProduct" : element._id,"emailShop": result.emailShop})
-                    }
+                        var newBill = {
+                            emailShop:result.emailShop,
+                            emailCustomer: userCustomer.email,
+                            phoneSend: result.phoneShop,
+                            phoneReceive: userCustomer.phone,
+                            phoneShipper: '',
+                            addressReceive: userCustomer.address,
+                            addressSend: addressShop,
+                            status: 0,
+                            category: result.category,
+                            weight: result.category,
+                            idProduct: element._id,
+                            moneyItem: 300000,
+                            moneyShip: 20000,
+                            time: 123458784,
+                            note: "String"
+                        }
+                        bill.create(newBill, function(err,result) {
+                            if(!err){
+                                socket.broadcast.emit("SopNewBill", {"emailCustom": userCustomer.email,"phoneCustomer": userCustomer.phone,"addressCustomer": userCustomer.address ,"idProduct" : element._id,"emailShop": result.emailShop, "idBill": result._id})    
+                            }
+                        })
+                        }
                 })
-               /* product.findById(element._id,function(result, err){
-                    if(!result) {
-                        console.log("réultPro",res)
-                        socket.broadcast.emit("SopNewBill", {"userCustomer" : userCustomer, "idProduct" : element._id,"emailShop": result.email})
-                    }
-                }) */
             }) 
         })
     })

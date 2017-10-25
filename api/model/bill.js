@@ -11,7 +11,7 @@ var frameBill= new schema({
     addressReceive: String,
     addressSend: String,
     status: Number,
-    Category: String,
+    category: String,
     weight: String,
     idProduct: String,
     moneyItem: Number,
