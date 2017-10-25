@@ -27,9 +27,8 @@ module.exports = function (io) {
             console.log(socket.id + " disconnect");
         })
         socket.on("cBuy", function(arrProduct, userCustomer) {
-            var myJSON = JSON.stringify(arrProduct);
-            console.log(myJSON)
-            myJSON.forEach(function(element) {
+            console.log(arrProduct)
+            Array.from(arrProduct).forEach(function(element) {
                   console.log(element)
                /* product.findById(element._id,function(result, err){
                     if(!result) {
