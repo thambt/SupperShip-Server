@@ -29,13 +29,17 @@ module.exports = function (io) {
         socket.on("cBuy", function(arrProduct, userCustomer) {
             console.log(arrProduct)
             Array.from (arrProduct).forEach(function(element) {
-                  console.log(element)
-               product.findById(element._id,function(result, err){
+                  console.log(element._id)
+                  product.findById( element._id,function (err, result) {
+                    if (!result)
+                    console.log("réultPro",result)
+                })
+               /* product.findById(element._id,function(result, err){
                     if(!result) {
-                        console.log("réultPro",result)
+                        console.log("réultPro",res)
                         socket.broadcast.emit("SopNewBill", {"userCustomer" : userCustomer, "idProduct" : element._id,"emailShop": result.email})
                     }
-                })
+                }) */
             }) 
         })
     })
