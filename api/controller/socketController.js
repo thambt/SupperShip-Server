@@ -31,7 +31,7 @@ module.exports = function (io) {
             Array.from (arrProduct).forEach(function(element) {
                   console.log(element._id)
                   product.findById( element._id,function (err, result) {
-                    if (!result)
+                    if (!err)
                     console.log("réultPro",result)
                 })
                /* product.findById(element._id,function(result, err){
