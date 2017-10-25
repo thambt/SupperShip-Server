@@ -27,7 +27,6 @@ module.exports = function (io) {
             console.log(socket.id + " disconnect");
         })
         socket.on("cBuy", function(arrProduct, userCustomer) {
-            socket.broadcast.emit("SopNewBill");
             console.log(arrProduct)
             Array.from (arrProduct).forEach(function(element) {
                   console.log(element._id)
