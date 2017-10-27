@@ -26,7 +26,7 @@ module.exports = function (io) {
         socket.on('disconnect', function () {
             console.log(socket.id + " disconnect");
         })
-        socket.on("cBuy", function(arrProduct, userCustomer) {
+    /*    socket.on("cBuy", function(arrProduct, userCustomer) {
             console.log(arrProduct)
             Array.from (arrProduct).forEach(function(element) {
                   console.log(element._id)
@@ -57,6 +57,6 @@ module.exports = function (io) {
                         }
                 })
             }) 
-        })
+        })*/
     })
 }
