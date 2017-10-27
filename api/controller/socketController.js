@@ -43,7 +43,6 @@ module.exports = function (io) {
                             addressSend: addressShop,
                             status: 0,
                             category: result.category,
-                            weight: result.category,
                             idProduct: element._id,
                             moneyItem: 300000,
                             moneyShip: 20000,
