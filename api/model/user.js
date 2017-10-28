@@ -1,5 +1,6 @@
 var mongoose=require("mongoose");
 const config = require('../config/database');
+var noti = require("./notiShop")
 
 var schema = mongoose.Schema;
 var frameUser= new schema({
@@ -14,7 +15,8 @@ var frameUser= new schema({
     kindUser: Number,
     longitude: { type: Number, default: -1 },
     latitude: { type: Number, default: -1 },
-    licen: { type: String, default: 0 }
+    licen: { type: String, default: 0 },
+    listNoti: [noti]
 });
 var user=mongoose.model("users",frameUser);
 

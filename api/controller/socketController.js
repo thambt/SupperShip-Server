@@ -1,6 +1,7 @@
 var user = require("../model/user");
 var bill = require("../model/bill")
 var product = require("../model/product")
+var noti = require("../model/notiShop")
 
 var socketID = new Array();
 var check = 0;
@@ -26,37 +27,70 @@ module.exports = function (io) {
         socket.on('disconnect', function () {
             console.log(socket.id + " disconnect");
         })
-    /*    socket.on("cBuy", function(arrProduct, userCustomer) {
+        socket.on("cBuy", function (arrProduct, userCustomer) {
             console.log(arrProduct)
-            Array.from (arrProduct).forEach(function(element) {
-                  console.log(element._id)
-                  product.findById( element._id,function (err, result) {
-                    if (!err)
-                    {
-                        var newBill = {
-                            emailShop:result.emailShop,
-                            emailCustomer: userCustomer.email,
-                            phoneSend: result.phoneShop,
-                            phoneReceive: userCustomer.phone,
-                            phoneShipper: '',
-                            addressReceive: userCustomer.address,
-                            addressSend: addressShop,
-                            status: 0,
-                            category: result.category,
-                            idProduct: element._id,
-                            moneyItem: 300000,
-                            moneyShip: 20000,
-                            time: 123458784,
-                            note: "String"
+            Array.from(arrProduct).forEach(function (element) {
+                user.findOne({ email: element.email }, function (err, result) {
+                    var newBill = {
+                        emailShop: element.emailShop,
+                        emailCustomer: userCustomer.email,
+                        phoneSend: result.phone,
+                        phoneReceive: userCustomer.phone,
+                        phoneShipper: '',
+                        addressReceive: userCustomer.address,
+                        addressSend: result.addressShop,
+                        status: 0,
+                        listProduct: element.listProduct,
+                        moneyItem: 300000,
+                        moneyShip: 20000,
+                        time: '',
+                        note: "String"
+                    }
+                    bill.create(newBill, function (err, result) {
+                        if (!err) {
+                            var newNoti = {
+                                emailShop: result.emailShop,
+                                nameActor: userCustomer.email,
+                                action: "mua hàng",
+                                idBill: result._id
+                            };
+
+                            user.findOneAndUpdate({ email: result.emailShop }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
+                                function (err, data) {
+                                    console.log( userCustomer.email +" "+ userCustomer.phone +" "+userCustomer.address +" "+element.email +" "+ result._id)
+                                    socket.broadcast.emit("SopNewBill", { "emailCustom": userCustomer.email, "phoneCustomer": userCustomer.phone, "addressCustomer": userCustomer.address, "emailShop":element.email, "idBill": result._id, "action": " mua hàng " })
+                                })
                         }
-                        bill.create(newBill, function(err,result) {
-                            if(!err){
-                                socket.broadcast.emit("SopNewBill", {"emailCustom": userCustomer.email,"phoneCustomer": userCustomer.phone,"addressCustomer": userCustomer.address ,"idProduct" : element._id,"emailShop": result.emailShop, "idBill": result._id})    
-                            }
-                        })
-                        }
+                    })
                 })
-            }) 
-        })*/
+
+                /*element.listProduct.forEach(function (elementProduct) {
+                    product.findById(elementProduct._id, function (err, result) {
+                        if (!err) {
+                            var newBill = {
+                                emailShop: result.emailShop,
+                                emailCustomer: userCustomer.email,
+                                phoneSend: result.phoneShop,
+                                phoneReceive: userCustomer.phone,
+                                phoneShipper: '',
+                                addressReceive: userCustomer.address,
+                                addressSend: result.addressShop,
+                                status: 0,
+                                category: result.category,
+                                weight: result.category,
+                                idProduct: elementProduct._id,
+                                moneyItem: 300000,
+                                moneyShip: 20000,
+                                time: '',
+                                note: "String"
+                            }
+                            
+                    })
+                })*/
+            })
+        })
     })
 }
+
+/* user.findOneAndUpdate({ email: element.ownEmail }, { $push: { listNotis: newNoti } }, { safe: true, upsert: true, new: true },
+                                */
