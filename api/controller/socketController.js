@@ -54,12 +54,15 @@ module.exports = function (io) {
                                 action: "mua hàng",
                                 idBill: result._id
                             };
+                                   socket.broadcast.emit("SopNewBill", { "emailCustom": userCustomer.email, "phoneCustomer": userCustomer.phone, "addressCustomer": userCustomer.address, "emailShop":element.email, "idBill": result._id, "action": " mua hàng " })
+                             
 
-                            user.findOneAndUpdate({ email: result.emailShop }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
+                           /* user.findOneAndUpdate({ email: result.emailShop }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
                                 function (err, data) {
+                                    console.log("errcreateNot", err)
                                     console.log( userCustomer.email +" "+ userCustomer.phone +" "+userCustomer.address +" "+element.email +" "+ result._id)
                                     socket.broadcast.emit("SopNewBill", { "emailCustom": userCustomer.email, "phoneCustomer": userCustomer.phone, "addressCustomer": userCustomer.address, "emailShop":element.email, "idBill": result._id, "action": " mua hàng " })
-                                })
+                                })*/
                         }
                     })
                 })
