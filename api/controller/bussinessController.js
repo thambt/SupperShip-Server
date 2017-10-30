@@ -80,6 +80,14 @@ module.exports = function (app, passport, io) {
     })
 
 
+    // get Product theo loai
+    app.get("/shop/filterProduct/:kind", function (req, res) {
+         product.find({ category: { $regex: "^" + req.params.kind } },function (err, result) {
+            res.json({ "arrProduct": result });
+        })
+    })
+
+
     // Delete Product:
     app.get("/shop/deleteProduct/:id", function (req, res) {
         product.remove({ "id": req.params.id }, function (err, result) {
