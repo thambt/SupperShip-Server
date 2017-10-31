@@ -82,7 +82,7 @@ module.exports = function (app, passport, io) {
 
     // get Product theo loai
     app.get("/shop/filterProduct/:kind", function (req, res) {
-         product.find({ category: { $regex: "^" + req.params.kind } },function (err, result) {
+         product.find({ kind: { $regex: "^" + req.params.kind } },function (err, result) {
             res.json({ "arrProduct": result });
         })
     })
