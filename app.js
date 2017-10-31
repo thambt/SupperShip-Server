@@ -35,6 +35,7 @@ var Users = require('./api/model/user')
 
 app.set("view engine", "ejs");
 
+
 mongoose.connect(config.database);
 //mongoose.connect('mongodb://localhost/SupperShip');
 
