@@ -80,9 +80,16 @@ module.exports = function (app, passport, io) {
     })
 
 
-    // get Product theo loai
+    // get Product theo loai cho khach
     app.get("/shop/filterProduct/:kind", function (req, res) {
          product.find({ kind: { $regex: "^" + req.params.kind } },function (err, result) {
+            res.json({ "arrProduct": result });
+        })
+    })
+
+    // get Product theo loai cho shop
+    app.get("/shop/shopFilterProduct/:kind/:email", function (req, res) {
+         product.find({email : req.params.email, kind: { $regex: "^" + req.params.kind }  },function (err, result) {
             res.json({ "arrProduct": result });
         })
     })
