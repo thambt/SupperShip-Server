@@ -30,7 +30,8 @@ module.exports = function (io) {
         socket.on("cBuy", function (arrProduct, userCustomer) {
             console.log(arrProduct)
             Array.from(arrProduct).forEach(function (element) {
-                user.findOne({ email: element.email }, function (err, result) {
+               user.findOne({ email: element.email }, function (err, result) {
+                    console.log("find a user",result)
                     var newBill = {
                         emailShop: element.emailShop,
                         emailCustomer: userCustomer.email,
@@ -55,19 +56,27 @@ module.exports = function (io) {
                                 idBill: result._id
                             };
                                    socket.broadcast.emit("SopNewBill", { "emailCustom": userCustomer.email, "phoneCustomer": userCustomer.phone, "addressCustomer": userCustomer.address, "emailShop":element.email, "idBill": result._id, "action": " mua hàng " })
-                             
+                        }
+                    })
+                })
 
-                           /* user.findOneAndUpdate({ email: result.emailShop }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
+               
+            })
+        })
+    })
+}
+
+/* user.findOneAndUpdate({ email: element.ownEmail }, { $push: { listNotis: newNoti } }, { safe: true, upsert: true, new: true },
+                                */
+
+ /* user.findOneAndUpdate({ email: result.emailShop }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
                                 function (err, data) {
                                     console.log("errcreateNot", err)
                                     console.log( userCustomer.email +" "+ userCustomer.phone +" "+userCustomer.address +" "+element.email +" "+ result._id)
                                     socket.broadcast.emit("SopNewBill", { "emailCustom": userCustomer.email, "phoneCustomer": userCustomer.phone, "addressCustomer": userCustomer.address, "emailShop":element.email, "idBill": result._id, "action": " mua hàng " })
                                 })*/
-                        }
-                    })
-                })
 
-                /*element.listProduct.forEach(function (elementProduct) {
+ /*element.listProduct.forEach(function (elementProduct) {
                     product.findById(elementProduct._id, function (err, result) {
                         if (!err) {
                             var newBill = {
@@ -90,10 +99,3 @@ module.exports = function (io) {
                             
                     })
                 })*/
-            })
-        })
-    })
-}
-
-/* user.findOneAndUpdate({ email: element.ownEmail }, { $push: { listNotis: newNoti } }, { safe: true, upsert: true, new: true },
-                                */
