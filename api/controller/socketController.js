@@ -55,7 +55,7 @@ module.exports = function (io) {
                                 action: "mua hang",
                                 idBill: result._id
                             };
-                                   socket.broadcast.emit("SopNewBill", { "emailCustom": userCustomer.email, "phoneCustomer": userCustomer.phone, "addressCustomer": userCustomer.address, "emailShop":element.email, "idBill": result._id, "action": " mua hàng " })
+                                   socket.broadcast.emit("SopNewBill", { "emailCustom": userCustomer.email, "phoneCustomer": userCustomer.phone, "emailShop":element.email, "idBill": result._id, "action": " mua hang " })
                         }
                     })
                 })
