@@ -55,8 +55,9 @@ module.exports = function (io) {
                                 action: "mua hang",
                                 idBill: result._id
                             };
-                            noti.create(newNoti, function(err, result){
-                                console.log("create Noti",result)
+                             user.findOneAndUpdate({ email: result.emailShop }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
+                                    function (err, data) {
+                                console.log("create Noti",data)
                             })
                                    socket.broadcast.emit("SopNewBill", { "emailCustom": userCustomer.email, "phoneCustomer": userCustomer.phone, "emailShop":element.email, "idBill": result._id, "action": " mua hang " })
                         }
