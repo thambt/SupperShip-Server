@@ -55,6 +55,9 @@ module.exports = function (io) {
                                 action: "mua hang",
                                 idBill: result._id
                             };
+                            noti.create(newNoti, function(err, result){
+                                console.log("create Noti",result)
+                            })
                                    socket.broadcast.emit("SopNewBill", { "emailCustom": userCustomer.email, "phoneCustomer": userCustomer.phone, "emailShop":element.email, "idBill": result._id, "action": " mua hang " })
                         }
                     })
