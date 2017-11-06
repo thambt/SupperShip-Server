@@ -33,7 +33,7 @@ module.exports = function (io) {
                user.findOne({ email: element.email }, function (err, result) {
                     console.log("find a user",result)
                     var newBill = {
-                        emailShop: element.emailShop,
+                        emailShop: result.email,
                         emailCustomer: userCustomer.email,
                         phoneSend: result.phone,
                         phoneReceive: userCustomer.phone,
@@ -49,11 +49,13 @@ module.exports = function (io) {
                     }
                     bill.create(newBill, function (err, result) {
                         if (!err) {
+                            console.log("create Bill",result)
                             var newNoti = {
                                 emailShop: result.emailShop,
                                 nameActor: userCustomer.email,
                                 action: "mua hang",
-                                idBill: result._id
+                                idBill: result._id,
+                                read: false
                             };
                              user.findOneAndUpdate({ email: result.emailShop }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
                                     function (err, data) {

@@ -5,7 +5,8 @@ var noti= new schema({
     emailShop:String,
     nameActor: String,
     action: String,
-    idBill: String
+    idBill: String,
+    read: Boolean
 });
 
 module.exports=noti;

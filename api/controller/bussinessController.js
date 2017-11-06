@@ -179,6 +179,67 @@ module.exports = function (app, passport, io) {
         })
     })
 
+//====================================================================
+
+//============================Noti==================================
+      // get My Noti: 
+    app.get("/user/getNoti/:email", function (req, res) {
+         var myNoti = new Array();
+        user.findOne({ email: req.params.email }, function (err, result) {
+            if (result != null) {
+                 console.log(result)
+                 Array.from(result.listNoti).forEach(function (element) {
+                    myNoti.push(element)
+                })
+            }
+            res.json({ "listNoti": myNoti })
+            console.log(myNoti)
+        })
+    })
+
+    //================================================
+
+    // Delete Noti:
+    app.get("/user/deleteNoti/:email/:id", function (req, res) {
+       user.update({ email: req.params.email },
+            { $pull: { "listNoti": { _id: req.params.id } } },
+            function (err, result) {
+                if (err == null) {
+                    res.json({ "status": true });
+                }
+                else {
+                    res.json({ "status": false });
+                }
+            })
+    })
+
+    // update status of Noti
+    app.post("/user/updateNoti", function (req, res) {
+        user.update({ email: req.body.email }, { $set: { "listNoti": {_id: req.body.id} } }, function (err, result) {
+            if (err == null)
+                res.json({ "status": true })
+            //else
+            // console.log(err)
+        })
+    })
+
+
+
+//==================================================================
 
 }
 //==================================================================================
+/* //Delete Friend
+    app.get("/user/delete-request/:email/:emailSend", function (req, res) {
+        infoRequest.update({ emailReceive: req.params.email },
+            { $pull: { "infoSend": { emailSend: req.params.emailSend } } },
+            function (err, result) {
+                if (err == null) {
+                    res.json({ "status": true });
+                }
+                else {
+                    res.json({ "status": false });
+                }
+            })
+    })*/
+
