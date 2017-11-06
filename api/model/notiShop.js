@@ -6,7 +6,8 @@ var noti= new schema({
     nameActor: String,
     action: String,
     idBill: String,
-    read: Boolean
+    read: Boolean,
+    status: Number
 });
 
 module.exports=noti;

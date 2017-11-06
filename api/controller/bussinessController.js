@@ -213,8 +213,8 @@ module.exports = function (app, passport, io) {
             })
     })
 
-    // update status of Noti
-    app.get("/user/updateNoti/:email/:id/:status", function (req, res) {
+    // update read of Noti
+    app.get("/user/updateReadNoti/:email/:id/:status", function (req, res) {
         user.update({ email: req.params.email, "listNoti._id": req.params.id }, { $set: { "listNoti.$.read": req.params.status } }, function (err, result) {
             if (err == null)
                 res.json({ "status": true })
@@ -224,7 +224,15 @@ module.exports = function (app, passport, io) {
     })
 
 
-
+    // update status of Noti
+    app.get("/user/updateStatusNoti/:email/:id/:status", function (req, res) {
+        user.update({ email: req.params.email, "listNoti._id": req.params.id }, { $set: { "listNoti.$.status": req.params.status } }, function (err, result) {
+            if (err == null)
+                res.json({ "status": true })
+                else
+                res.json({ "status": false })
+        })
+    })
 //==================================================================
 
 }

@@ -55,7 +55,8 @@ module.exports = function (io) {
                                 nameActor: userCustomer.email,
                                 action: "mua hang",
                                 idBill: result._id,
-                                read: false
+                                read: false,
+                                status: 0
                             };
                              user.findOneAndUpdate({ email: result.emailShop }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
                                     function (err, data) {
