@@ -27,8 +27,8 @@ module.exports = function (io) {
         socket.on('disconnect', function () {
             console.log(socket.id + " disconnect");
         })
-        socket.on("cBuy", function (arrProduct, userCustomer) {
-            console.log(arrProduct)
+        socket.on("cBuy", function (arrProduct, userCustomer, time) {
+            console.log(time)
             Array.from(arrProduct).forEach(function (element) {
                user.findOne({ email: element.email }, function (err, result) {
                     console.log("find a user",result)
@@ -56,7 +56,8 @@ module.exports = function (io) {
                                 action: "mua hang",
                                 idBill: result._id,
                                 read: false,
-                                status: 0
+                                status: 0,
+                                time: time
                             };
                              user.findOneAndUpdate({ email: result.emailShop }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
                                     function (err, data) {
