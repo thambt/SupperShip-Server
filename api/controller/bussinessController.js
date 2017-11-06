@@ -214,12 +214,12 @@ module.exports = function (app, passport, io) {
     })
 
     // update status of Noti
-    app.post("/user/updateNoti", function (req, res) {
-        user.update({ email: req.body.email }, { $set: { "listNoti": {_id: req.body.id} } }, function (err, result) {
+    app.get("/user/updateNoti/:email/:id/:status", function (req, res) {
+        user.update({ email: req.params.email, "listNoti._id": req.params.id }, { $set: { "listNoti.$.read": req.params.status } }, function (err, result) {
             if (err == null)
                 res.json({ "status": true })
-            //else
-            // console.log(err)
+                else
+                res.json({ "status": false })
         })
     })
 
@@ -229,17 +229,3 @@ module.exports = function (app, passport, io) {
 
 }
 //==================================================================================
-/* //Delete Friend
-    app.get("/user/delete-request/:email/:emailSend", function (req, res) {
-        infoRequest.update({ emailReceive: req.params.email },
-            { $pull: { "infoSend": { emailSend: req.params.emailSend } } },
-            function (err, result) {
-                if (err == null) {
-                    res.json({ "status": true });
-                }
-                else {
-                    res.json({ "status": false });
-                }
-            })
-    })*/
-
