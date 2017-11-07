@@ -36,9 +36,9 @@ module.exports = function (app, passport, io) {
         })
     })
 
-     // get Product by _id: 
-     app.get("/user/getProductById/:id", function (req, res) {
-        product.findById( req.params.id,function (err, result) {
+    // get Product by _id: 
+    app.get("/user/getProductById/:id", function (req, res) {
+        product.findById(req.params.id, function (err, result) {
             if (err)
                 res.json({ "status": false })
             else
@@ -48,7 +48,7 @@ module.exports = function (app, passport, io) {
 
     // Update quantity product: 
     app.post("/shop/updateNumPro", function (req, res) {
-        product.update({ id: req.body.id },
+        product.update({ _id: req.body.id },
             {
                 $set: {
                     "quantity": req.body.quantity
@@ -62,7 +62,7 @@ module.exports = function (app, passport, io) {
 
     // Update Product : 
     app.post("/shop/updateProduct", function (req, res) {
-        product.update({ id: req.body.id },
+        product.update({ _id: req.body.id },
             {
                 $set: {
                     "name": req.body.name,
@@ -82,14 +82,14 @@ module.exports = function (app, passport, io) {
 
     // get Product theo loai cho khach
     app.get("/shop/filterProduct/:kind", function (req, res) {
-         product.find({ kind: { $regex: "^" + req.params.kind } },function (err, result) {
+        product.find({ kind: { $regex: "^" + req.params.kind } }, function (err, result) {
             res.json({ "arrProduct": result });
         })
     })
 
     // get Product theo loai cho shop
     app.get("/shop/shopFilterProduct/:kind/:email", function (req, res) {
-         product.find({emailShop : req.params.email, kind: { $regex: "^" + req.params.kind }  },function (err, result) {
+        product.find({ emailShop: req.params.email, kind: { $regex: "^" + req.params.kind } }, function (err, result) {
             res.json({ "arrProduct": result });
         })
     })
@@ -97,7 +97,7 @@ module.exports = function (app, passport, io) {
 
     // Delete Product:
     app.get("/shop/deleteProduct/:id", function (req, res) {
-        product.remove({ "id": req.params.id }, function (err, result) {
+        product.remove({ _id: req.params.id }, function (err, result) {
             if (err != null) {
                 res.json({ "status": true })
             }
@@ -137,7 +137,7 @@ module.exports = function (app, passport, io) {
 
     // Update Bill : 
     app.post("/shop/updateBill", function (req, res) {
-        bill.update({ id: req.body.id },
+        bill.update({ _id: req.body.id },
             {
                 $set: {
                     "emailShipper": req.body.emailShipper,
@@ -164,7 +164,7 @@ module.exports = function (app, passport, io) {
 
     //============= get temp bill for shop============
     app.get("/shop/getBillTemp/:email", function (req, res) {
-        bill.find({ emailShop: { $regex: "^" + req.params.email } }, {status : {$regex: "^" + 0}},function (err, result) {
+        bill.find({ emailShop: { $regex: "^" + req.params.email } }, { status: { $regex: "^" + 0 } }, function (err, result) {
             res.json({ "arrBill": result });
         })
     })
@@ -172,23 +172,23 @@ module.exports = function (app, passport, io) {
 
     // Delete Bill:
     app.get("/shop/deleteBill/:id", function (req, res) {
-        bill.remove({ "id": req.params.id }, function (err, result) {
+        bill.remove({ _id: req.params.id }, function (err, result) {
             if (err != null) {
                 res.json({ "status": true })
             }
         })
     })
 
-//====================================================================
+    //====================================================================
 
-//============================Noti==================================
-      // get My Noti: 
+    //============================Noti==================================
+    // get My Noti: 
     app.get("/user/getNoti/:email", function (req, res) {
-         var myNoti = new Array();
+        var myNoti = new Array();
         user.findOne({ email: req.params.email }, function (err, result) {
             if (result != null) {
-                 console.log(result)
-                 Array.from(result.listNoti).forEach(function (element) {
+                console.log(result)
+                Array.from(result.listNoti).forEach(function (element) {
                     myNoti.push(element)
                 })
             }
@@ -201,7 +201,7 @@ module.exports = function (app, passport, io) {
 
     // Delete Noti:
     app.get("/user/deleteNoti/:email/:id", function (req, res) {
-       user.update({ email: req.params.email },
+        user.update({ email: req.params.email },
             { $pull: { "listNoti": { _id: req.params.id } } },
             function (err, result) {
                 if (err == null) {
@@ -218,22 +218,28 @@ module.exports = function (app, passport, io) {
         user.update({ email: req.params.email, "listNoti._id": req.params.id }, { $set: { "listNoti.$.read": req.params.status } }, function (err, result) {
             if (err == null)
                 res.json({ "status": true })
-                else
+            else
                 res.json({ "status": false })
         })
     })
 
 
     // update status of Noti
-    app.get("/user/updateStatusNoti/:email/:id/:status", function (req, res) {
+    app.get("/user/updateStatusNoti/:email/:id/:status/:idBill", function (req, res) {
         user.update({ email: req.params.email, "listNoti._id": req.params.id }, { $set: { "listNoti.$.status": req.params.status } }, function (err, result) {
             if (err == null)
-                res.json({ "status": true })
-                else
-                res.json({ "status": false })
+            {
+                 bill.remove({ _id: req.params.idBill }, function (err, result) {
+                    if (err == null) {
+                        res.json({ "status": true })
+                    }
+                    else 
+                    res.json({ "status": false })
+                })
+            }
         })
     })
-//==================================================================
+    //==================================================================
 
 }
 //==================================================================================
