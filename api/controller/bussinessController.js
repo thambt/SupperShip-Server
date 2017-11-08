@@ -119,8 +119,16 @@ module.exports = function (app, passport, io) {
 
     // get My Bill: 
     app.get("/user/getBill/:email", function (req, res) {
-        bill.find({ email: req.params.email }, function (err, result) {
+        bill.find({ emailShop: req.params.email }, function (err, result) {
             res.json({ "arrBill": result });
+           // console.log(result);
+        })
+    })
+
+    //get Bill by Id: 
+    app.get("/user/getBillById/:id", function (req, res) {
+        bill.findById(req.params.id , function (err, result) {
+            res.json({ "Bill": result });
             console.log(result);
         })
     })
