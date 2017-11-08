@@ -27,6 +27,17 @@ module.exports = function (io) {
         socket.on('disconnect', function () {
             console.log(socket.id + " disconnect");
         })
+
+         socket.on("shopAcceptBill", function (idBill) {
+             bill.findById(idBill, function(err, data)
+             {
+                 if(err==null){
+                      socket.broadcast.emit("shopAcceptYourBill",data.emailCustomer)
+                 }
+             })
+         })
+
+
         socket.on("cBuy", function (arrProduct, userCustomer, time) {
             console.log(time)
             Array.from(arrProduct).forEach(function (element) {

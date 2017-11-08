@@ -117,9 +117,17 @@ module.exports = function (app, passport, io) {
         })
     })
 
-    // get My Bill: 
+    // get Shop Bill: 
     app.get("/user/getBill/:email", function (req, res) {
         bill.find({ emailShop: req.params.email }, function (err, result) {
+            res.json({ "arrBill": result });
+           // console.log(result);
+        })
+    })
+
+    //get Custom bill
+    app.get("/custom/getBill/:email", function (req, res) {
+        bill.find({ emailCustomer: req.params.email }, function (err, result) {
             res.json({ "arrBill": result });
            // console.log(result);
         })
@@ -245,6 +253,8 @@ module.exports = function (app, passport, io) {
                     res.json({ "status": false })
                 })
             }
+             else 
+                    res.json({ "status": false })
         })
     })
     //==================================================================
