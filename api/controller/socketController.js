@@ -85,37 +85,3 @@ module.exports = function (io) {
         })
     })
 }
-
-/* user.findOneAndUpdate({ email: element.ownEmail }, { $push: { listNotis: newNoti } }, { safe: true, upsert: true, new: true },
-                                */
-
- /* user.findOneAndUpdate({ email: result.emailShop }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
-                                function (err, data) {
-                                    console.log("errcreateNot", err)
-                                    console.log( userCustomer.email +" "+ userCustomer.phone +" "+userCustomer.address +" "+element.email +" "+ result._id)
-                                    socket.broadcast.emit("SopNewBill", { "emailCustom": userCustomer.email, "phoneCustomer": userCustomer.phone, "addressCustomer": userCustomer.address, "emailShop":element.email, "idBill": result._id, "action": " mua hàng " })
-                                })*/
-
- /*element.listProduct.forEach(function (elementProduct) {
-                    product.findById(elementProduct._id, function (err, result) {
-                        if (!err) {
-                            var newBill = {
-                                emailShop: result.emailShop,
-                                emailCustomer: userCustomer.email,
-                                phoneSend: result.phoneShop,
-                                phoneReceive: userCustomer.phone,
-                                phoneShipper: '',
-                                addressReceive: userCustomer.address,
-                                addressSend: result.addressShop,
-                                status: 0,
-                                category: result.category,
-                                weight: result.category,
-                                idProduct: elementProduct._id,
-                                moneyItem: 300000,
-                                moneyShip: 20000,
-                                time: '',
-                                note: "String"
-                            }
-                            
-                    })
-                })*/
