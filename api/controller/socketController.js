@@ -43,8 +43,9 @@ module.exports = function (io) {
             Array.from(arrProduct).forEach(function (element) {
                user.findOne({ email: element.email }, function (err, result) {
                     console.log("find a user",result)
+                    if(err == null){
                     var newBill = {
-                        emailShop: result.email,
+                        emailShop: element.email,
                         emailCustomer: userCustomer.email,
                         phoneSend: result.phone,
                         phoneReceive: userCustomer.phone,
@@ -77,8 +78,8 @@ module.exports = function (io) {
                                    socket.broadcast.emit("SopNewBill", { "emailCustom": userCustomer.email, "phoneCustomer": userCustomer.phone, "emailShop":element.email, "idBill": result._id, "action": " mua hang " })
                         }
                     })
+               }
                 })
-
                
             })
         })
