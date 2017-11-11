@@ -28,11 +28,20 @@ module.exports = function (io) {
             console.log(socket.id + " disconnect");
         })
 
-         socket.on("shopAcceptBill", function (idBill) {
+         socket.on("shopAcceptBill", function (code,idBill) {
+             console.log(idBill)
              bill.findById(idBill, function(err, data)
              {
                  if(err==null){
-                      socket.broadcast.emit("shopAcceptYourBill",data.emailCustomer)
+                     if(code== 1)
+                     console.log(data)
+                     if(data != null)
+                     {
+                         
+                         socket.broadcast.to("custom@gmail.com").emit("shopAcceptYourBill",{"code": code})
+                        // socket.emit("shopAcceptYourBill",code)
+                 }
+                     // socket.broadcast.emit("shopAcceptYourBill",data.emailCustomer, idBill,code)
                  }
              })
          })

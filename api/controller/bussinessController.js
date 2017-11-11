@@ -242,9 +242,12 @@ module.exports = function (app, passport, io) {
 
     // update status of Noti
     app.get("/user/updateStatusNoti/:email/:id/:status/:idBill", function (req, res) {
+        console.log('status',req.params.status)
         user.update({ email: req.params.email, "listNoti._id": req.params.id }, { $set: { "listNoti.$.status": req.params.status } }, function (err, result) {
             if (err == null)
             {
+                if(req.params.status == 2)
+                {
                  bill.remove({ _id: req.params.idBill }, function (err, result) {
                     if (err == null) {
                         res.json({ "status": true })
@@ -252,6 +255,9 @@ module.exports = function (app, passport, io) {
                     else 
                     res.json({ "status": false })
                 })
+            }
+            else
+             res.json({ "status": true })
             }
              else 
                     res.json({ "status": false })
