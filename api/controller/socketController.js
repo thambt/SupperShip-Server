@@ -11,7 +11,13 @@ module.exports = function (io) {
 
         socket.on('email', function (data, kindUser) {
             socket.id = data;
-             socket.join('roomShipper');
+            socket.join('roomShipper');
+
+            var roster = io.sockets.clients('roomShipper');
+
+            roster.forEach(function (client) {
+                console.log('Username: ' + client.id);
+            });
             socketID.forEach(function (element) {
                 if (socket.id === element) {
                     check = 1;
@@ -19,7 +25,7 @@ module.exports = function (io) {
             }, this);
             if (check === 0) {
                 socketID.push(socket.id);
-              //  socket.join('roomShipper');
+                //  socket.join('roomShipper');
             }
             else {
                 check = 0;
@@ -33,30 +39,29 @@ module.exports = function (io) {
         // gửi sự kiện cho khách khi shop accept đơn hàng
         socket.on("shopAcceptBill", function (code, idBill) {
             bill.findById(idBill, function (err, data) {
-                    if (data != null) {
-                         bill.update({ _id: idBill}, { $set: { "status": code } }, function (err, result) {
-                             if(result != null)
-                             {
-                                 socket.broadcast.emit("shopAcceptYourBill", { "code": code })
-                             }
-                         })
-                    }
+                if (data != null) {
+                    bill.update({ _id: idBill }, { $set: { "status": code } }, function (err, result) {
+                        if (result != null) {
+                            socket.broadcast.emit("shopAcceptYourBill", { "code": code })
+                        }
+                    })
+                }
             })
 
         })
 
 
         // gửi broadcast cho shipper khi có bill mới:
-        socket.on("haveNewBill", function ( idBill) {
-          //  console.log(idBill)
+        socket.on("haveNewBill", function (idBill) {
+            //  console.log(idBill)
             bill.findById(idBill, function (err, data) {
-                    if (data != null) {
-                        // io.sockets.in('room')
-                        console.log("send haveNewBill",idBill)
-                       socket.broadcast.to('roomShipper').emit("haveNewBillShip", { "idBill": idBill })
-                        // socket.emit("shopAcceptYourBill",code)
-                    }
-                    // socket.broadcast.emit("shopAcceptYourBill",data.emailCustomer, idBill,code)
+                if (data != null) {
+                    // io.sockets.in('room')
+                    console.log("send haveNewBill", idBill)
+                    socket.broadcast.to('roomShipper').emit("haveNewBillShip", { "idBill": idBill })
+                    // socket.emit("shopAcceptYourBill",code)
+                }
+                // socket.broadcast.emit("shopAcceptYourBill",data.emailCustomer, idBill,code)
             })
         })
 
