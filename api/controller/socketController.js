@@ -37,11 +37,12 @@ module.exports = function (io) {
                          bill.update({ _id: idBill}, { $set: { "status": code } }, function (err, result) {
                              if(result != null)
                              {
-                                 client.broadcast.to("custom@gmail.com").emit("shopAcceptYourBill", { "code": code })
+                                 socket.broadcast.emit("shopAcceptYourBill", { "code": code })
                              }
                          })
                     }
             })
+            
         })
 
 
