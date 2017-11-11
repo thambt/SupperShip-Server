@@ -11,6 +11,7 @@ module.exports = function (io) {
 
         socket.on('email', function (data, kindUser) {
             socket.id = data;
+             socket.join('roomShipper');
             socketID.forEach(function (element) {
                 if (socket.id === element) {
                     check = 1;
@@ -18,7 +19,7 @@ module.exports = function (io) {
             }, this);
             if (check === 0) {
                 socketID.push(socket.id);
-                socket.join('roomShipper');
+              //  socket.join('roomShipper');
             }
             else {
                 check = 0;
@@ -51,7 +52,7 @@ module.exports = function (io) {
             bill.findById(idBill, function (err, data) {
                     if (data != null) {
                         // io.sockets.in('room')
-                        io.sockets.in('roomShipper').emit("haveNewBillShip", { "idBill": idBill })
+                       io.to('roomShipper').emit("haveNewBillShip", { "idBill": idBill })
                         // socket.emit("shopAcceptYourBill",code)
                     }
                     // socket.broadcast.emit("shopAcceptYourBill",data.emailCustomer, idBill,code)
