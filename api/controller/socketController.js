@@ -31,7 +31,6 @@ module.exports = function (io) {
 
         // gửi sự kiện cho khách khi shop accept đơn hàng
         socket.on("shopAcceptBill", function (code, idBill) {
-            console.log(idBill)
             bill.findById(idBill, function (err, data) {
                     if (data != null) {
                          bill.update({ _id: idBill}, { $set: { "status": code } }, function (err, result) {
@@ -42,7 +41,7 @@ module.exports = function (io) {
                          })
                     }
             })
-            
+
         })
 
 
@@ -52,7 +51,7 @@ module.exports = function (io) {
             bill.findById(idBill, function (err, data) {
                     if (data != null) {
                         // io.sockets.in('room')
-                        io.sockets.in('roomShipper').emit("haveNewBillShip", { "code": code })
+                        io.sockets.in('roomShipper').emit("haveNewBillShip", { "idBill": idBill })
                         // socket.emit("shopAcceptYourBill",code)
                     }
                     // socket.broadcast.emit("shopAcceptYourBill",data.emailCustomer, idBill,code)
