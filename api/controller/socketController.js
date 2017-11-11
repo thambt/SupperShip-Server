@@ -37,8 +37,8 @@ module.exports = function (io) {
                      console.log(data)
                      if(data != null)
                      {
-                         
-                         socket.broadcast.emit("shopAcceptYourBill",{"code": code})
+                         client.broadcast.to(arrayOfIds)
+                         client.broadcast.to("custom@gmail.com").emit("shopAcceptYourBill",{"code": code})
                         // socket.emit("shopAcceptYourBill",code)
                  }
                      // socket.broadcast.emit("shopAcceptYourBill",data.emailCustomer, idBill,code)
