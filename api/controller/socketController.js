@@ -52,7 +52,7 @@ module.exports = function (io) {
             bill.findById(idBill, function (err, data) {
                     if (data != null) {
                         // io.sockets.in('room')
-                       io.to('roomShipper').emit("haveNewBillShip", { "idBill": idBill })
+                       socket.broadcast.to('roomShipper').emit("haveNewBillShip", { "idBill": idBill })
                         // socket.emit("shopAcceptYourBill",code)
                     }
                     // socket.broadcast.emit("shopAcceptYourBill",data.emailCustomer, idBill,code)
