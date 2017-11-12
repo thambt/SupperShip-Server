@@ -53,14 +53,14 @@ module.exports = function (io) {
                     if (data != null) {
                         // io.sockets.in('room')
                         console.log("send ",idBill)
-                       socket.broadcast.to('roomShipper').emit("haveNewBillShip", { "idBill": idBill })
+                       socket.broadcast.emit("haveNewBillShip", { "idBill": idBill })
                         // socket.emit("shopAcceptYourBill",code)
                     }
                     // socket.broadcast.emit("shopAcceptYourBill",data.emailCustomer, idBill,code)
             })
         })
 
-        socket.on("cBuy", function (arrProduct, userCustomer, time) {
+        socket.on("cBuy", function (arrProduct, userCustomer,time, methodTransform) {
             console.log(time)
             Array.from(arrProduct).forEach(function (element) {
                 user.findOne({ email: element.email }, function (err, result) {
@@ -79,7 +79,8 @@ module.exports = function (io) {
                             moneyItem: 300000,
                             moneyShip: 20000,
                             time: '',
-                            note: "String"
+                            note: "String",
+                            methodTransform: methodTransform
                         }
                         bill.create(newBill, function (err, result) {
                             if (!err) {
@@ -91,7 +92,8 @@ module.exports = function (io) {
                                     idBill: result._id,
                                     read: false,
                                     status: 0,
-                                    time: time
+                                    time: time,
+                                    method: methodTransform
                                 };
                                 user.findOneAndUpdate({ email: result.emailShop }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
                                     function (err, data) {

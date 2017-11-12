@@ -8,6 +8,7 @@ var noti= new schema({
     idBill: String,
     read: Boolean,
     status: Number,
+    methodTransform: Number,
     time: Number
 });
 

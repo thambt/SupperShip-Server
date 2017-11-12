@@ -14,6 +14,7 @@ var frameBill= new schema({
     category: String,
     weight: String,
     listProduct: [String],
+    methodTransform: Number,
     moneyItem: Number,
     moneyShip: Number,
     time: String,
