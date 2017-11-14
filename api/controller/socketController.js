@@ -37,7 +37,7 @@ module.exports = function (io) {
                          bill.update({ _id: idBill}, { $set: { "status": code } }, function (err, result) {
                              if(result != null)
                              {
-                                 socket.broadcast.emit("shopAcceptYourBill", { "code": code })
+                                 socket.broadcast.emit("shopAcceptYourBill", { "code": code, "idBill" : idBill, "emailCustomer" : data.emailCustomer})
                              }
                          })
                     }
