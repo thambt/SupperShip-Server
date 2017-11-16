@@ -98,9 +98,11 @@ module.exports = function (app, passport, io) {
     // Delete Product:
     app.get("/shop/deleteProduct/:id", function (req, res) {
         product.remove({ _id: req.params.id }, function (err, result) {
-            if (err != null) {
+            if (err == null) {
                 res.json({ "status": true })
             }
+            else 
+            res.json({ "status": false })
         })
     })
 
