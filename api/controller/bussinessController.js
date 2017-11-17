@@ -191,9 +191,11 @@ module.exports = function (app, passport, io) {
     // Delete Bill:
     app.get("/shop/deleteBill/:id", function (req, res) {
         bill.remove({ _id: req.params.id }, function (err, result) {
-            if (err != null) {
+            console.log(err)
+            if (err == null) {
                 res.json({ "status": true })
-            }
+            } 
+
         })
     })
 
