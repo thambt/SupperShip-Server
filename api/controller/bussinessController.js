@@ -59,17 +59,19 @@ module.exports = function (app, passport, io) {
             })
     })
 
-
+  
     // Update Product : 
     app.post("/shop/updateProduct", function (req, res) {
         product.update({ _id: req.body.id },
             {
                 $set: {
+                    "image": req.body.kind,
                     "name": req.body.name,
                     "price": req.body.price,
                     "weight": req.body.weight,
+                    "quantity": req.body.quantity,
+                    "category": req.body.category,
                     "detail": req.body.detail,
-                    "color": req.body.color,
                     "kind": req.body.kind,
                     "guarantee": req.body.guarantee
                 }
@@ -101,8 +103,8 @@ module.exports = function (app, passport, io) {
             if (err == null) {
                 res.json({ "status": true })
             }
-            else 
-            res.json({ "status": false })
+            else
+                res.json({ "status": false })
         })
     })
 
@@ -123,7 +125,7 @@ module.exports = function (app, passport, io) {
     app.get("/user/getBill/:email", function (req, res) {
         bill.find({ emailShop: req.params.email }, function (err, result) {
             res.json({ "arrBill": result });
-           // console.log(result);
+            // console.log(result);
         })
     })
 
@@ -131,13 +133,13 @@ module.exports = function (app, passport, io) {
     app.get("/custom/getBill/:email", function (req, res) {
         bill.find({ emailCustomer: req.params.email }, function (err, result) {
             res.json({ "arrBill": result });
-           // console.log(result);
+            // console.log(result);
         })
     })
 
     //get Bill by Id: 
     app.get("/user/getBillById/:id", function (req, res) {
-        bill.findById(req.params.id , function (err, result) {
+        bill.findById(req.params.id, function (err, result) {
             res.json({ "Bill": result });
             console.log(result);
         })
@@ -194,7 +196,7 @@ module.exports = function (app, passport, io) {
             console.log(err)
             if (err == null) {
                 res.json({ "status": true })
-            } 
+            }
 
         })
     })
@@ -202,6 +204,7 @@ module.exports = function (app, passport, io) {
     //====================================================================
 
     //============================Noti==================================
+
     // get My Noti: 
     app.get("/user/getNoti/:email", function (req, res) {
         var myNoti = new Array();
@@ -246,25 +249,23 @@ module.exports = function (app, passport, io) {
 
     // update status of Noti
     app.get("/user/updateStatusNoti/:email/:id/:status/:idBill", function (req, res) {
-        console.log('status',req.params.status)
+        console.log('status', req.params.status)
         user.update({ email: req.params.email, "listNoti._id": req.params.id }, { $set: { "listNoti.$.status": req.params.status } }, function (err, result) {
-            if (err == null)
-            {
-                if(req.params.status == 2)
-                {
-                 bill.remove({ _id: req.params.idBill }, function (err, result) {
-                    if (err == null) {
-                        res.json({ "status": true })
-                    }
-                    else 
-                    res.json({ "status": false })
-                })
+            if (err == null) {
+                if (req.params.status == 2) {
+                    bill.remove({ _id: req.params.idBill }, function (err, result) {
+                        if (err == null) {
+                            res.json({ "status": true })
+                        }
+                        else
+                            res.json({ "status": false })
+                    })
+                }
+                else
+                    res.json({ "status": true })
             }
             else
-             res.json({ "status": true })
-            }
-             else 
-                    res.json({ "status": false })
+                res.json({ "status": false })
         })
     })
     //==================================================================
