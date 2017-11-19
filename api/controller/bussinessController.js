@@ -11,18 +11,21 @@ module.exports = function (app, passport, io) {
     app.post("/shop/createProduct", function (req, res) {
         console.log(req.body)
         product.create(req.body, function (err, result) {
-            if (!err)
+            if (err == null)
                 res.json({ "status": true })
             else
-                //res.json({ "status": false })
-                console.log(err)
+                res.json({ "status": false })
+            console.log(err)
         })
     })
 
     // get My product: 
     app.get("/shop/getProduct/:email", function (req, res) {
         product.find({ emailShop: req.params.email }, function (err, result) {
-            res.json({ "arrProduct": result });
+            if (err == null)
+                res.json({ "arrProduct": result });
+            else
+                res.json({ "arrProduct": null, "status": false });
         })
     })
 
@@ -30,7 +33,7 @@ module.exports = function (app, passport, io) {
     app.get("/shop/getAllProduct", function (req, res) {
         product.find(function (err, result) {
             if (err)
-                res.send(err)
+                res.json({ "arrAllProduct": null, "status": false });
             else
                 res.json({ "arrAllProduct": result });
         })
@@ -40,7 +43,7 @@ module.exports = function (app, passport, io) {
     app.get("/user/getProductById/:id", function (req, res) {
         product.findById(req.params.id, function (err, result) {
             if (err)
-                res.json({ "status": false })
+                res.json({ "status": false, "product": null })
             else
                 res.json({ "product": result });
         })
@@ -48,36 +51,42 @@ module.exports = function (app, passport, io) {
 
     // Update quantity product: 
     app.post("/shop/updateNumPro", function (req, res) {
-        product.update({ _id: req.body.id },
+        product.update({ _id: req.body._id },
             {
                 $set: {
-                    "quantity": req.body.quantity
+                    quantity: req.body.quantity
                 }
             }, function (err, result) {
                 if (err == null)
                     res.json({ "status": true })
+                else
+                    res.json({ "status": false })
             })
     })
 
-  
+
     // Update Product : 
     app.post("/shop/updateProduct", function (req, res) {
-        product.update({ _id: req.body.id },
+//console.log()
+        product.update({ _id: req.body._id },
             {
                 $set: {
-                    "image": req.body.kind,
-                    "name": req.body.name,
-                    "price": req.body.price,
-                    "weight": req.body.weight,
-                    "quantity": req.body.quantity,
-                    "category": req.body.category,
-                    "detail": req.body.detail,
-                    "kind": req.body.kind,
-                    "guarantee": req.body.guarantee
+                    image: req.body.image,
+                    name: req.body.name,
+                    price: req.body.price,
+                    weight: req.body.weight,
+                    quantity: req.body.quantity,
+                    category: req.body.category,
+                    detail: req.body.detail,
+                    kind: req.body.kind,
+                    guarantee: req.body.guarantee
                 }
             }, function (err, result) {
+                console.log( result)
                 if (err == null)
                     res.json({ "status": true })
+                else
+                    res.json({ "status": false }) // mayby product not found.
             })
     })
 
@@ -184,11 +193,19 @@ module.exports = function (app, passport, io) {
 
     //============= get temp bill for shop============
     app.get("/shop/getBillTemp/:email", function (req, res) {
-        bill.find({ emailShop: { $regex: "^" + req.params.email } }, { status: { $regex: "^" + 0 } }, function (err, result) {
+        bill.find({ emailShop: { $regex: "^" + req.params.email } }, { status: 0 }, function (err, result) {
             res.json({ "arrBill": result });
         })
     })
     //================================================
+
+    //============= get bill available for shipper============
+    app.get("/shipper/getBillAvai", function (req, res) {
+        bill.find({ status: 1 }, function (err, result) {
+            res.json({ "arrBill": result });
+            console.log(err)
+        })
+    })
 
     // Delete Bill:
     app.get("/shop/deleteBill/:id", function (req, res) {
@@ -196,6 +213,9 @@ module.exports = function (app, passport, io) {
             console.log(err)
             if (err == null) {
                 res.json({ "status": true })
+            }
+            else {
+                res.json({ "status": false })
             }
 
         })
