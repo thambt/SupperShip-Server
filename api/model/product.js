@@ -11,7 +11,6 @@ var frameProduct= new schema({
     price: String,
     quantity: String,
     weight: String,
-    category: String,
     name: String,
     detail: String,
     guarantee: { type: String, default: "0" }
