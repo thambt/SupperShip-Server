@@ -1,7 +1,8 @@
 var user = require("../model/user");
 const LocalStrategy = require('passport-local').Strategy
 var logout = require('express-passport-logout');
-var product = require("../model/product")
+var product = require("../model/product");
+var userShipper = require("../model/userShipper")
 
 function getuser(res) {
     user.find(function (err, users) {
