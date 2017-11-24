@@ -125,7 +125,6 @@ module.exports = function (app, passport, io) {
         bill.create(req.body, function (err, result) {
             if (!err) {
                 res.json({ "status": true });
-                socket.io.emit('haveNewBill', { 'bill': req.body })
             }
         })
     })

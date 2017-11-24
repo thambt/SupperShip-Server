@@ -2,6 +2,8 @@ var user = require("../model/user");
 var bill = require("../model/bill")
 var product = require("../model/product")
 var noti = require("../model/notiShop")
+var userShipper = require("../model/userShipper")
+
 
 var socketID = new Array();
 var check = 0;
@@ -50,6 +52,7 @@ module.exports = function (io) {
                             console.log("create Noti", data)
                         })
                     if (data != null) {
+
                         bill.update({ _id: idBill }, { $set: { "status": code } }, function (err, result) {
                             if (result != null) {
                                 socket.broadcast.emit("shopAcceptYourBill", { "code": code, "idBill": idBill, "emailCustomer": data.email })
@@ -58,12 +61,14 @@ module.exports = function (io) {
                     }
 
                 }
+
             })
 
         })
 
 
         // gửi broadcast cho shipper khi có bill mới:
+
         socket.on("haveNewBill", function (idBill, time) {
             //  console.log(idBill)
             bill.findById(idBill, function (err, data) {
@@ -81,6 +86,7 @@ module.exports = function (io) {
                      socket.broadcast.emit("haveNewBillShip", { "idBill": idBill, "time" : time })
 
                     // socket.emit("shopAcceptYourBill",code)
+
                 }
                 // socket.broadcast.emit("shopAcceptYourBill",data.emailCustomer, idBill,code)
             })
@@ -91,7 +97,16 @@ module.exports = function (io) {
             //  console.log(idBill)
             bill.findById(idBill, function (err, data) {
                 if (data != null) {
-                    if (data.status == 1) {
+
+                    if (data.status == 2) {
+                        userShipper.findOne({ email: emailShipper }, function (err, UserShipper) {
+                            if (UserShipper != null) {
+                                bill.findOneAndUpdate({ _id: idBill }, { $push: { listShipperRegister: UserShipper } }, { safe: true, upsert: true, new: true },
+                                    function (err, result) {
+                                        console.log("create Noti", result)
+                                    })
+                            }
+                        })
                         var newNoti = {
                             nameActor: data.emailShipper,
                             myEmail: data.emailShop,
@@ -102,7 +117,7 @@ module.exports = function (io) {
                             time: time,
                             method: data.methodTransform
                         };
-                        user.findOneAndUpdate({ email: data.emailCustomer }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
+                        user.findOneAndUpdate({ email: data.emailShop }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
                             function (err, result) {
                                 console.log("create Noti", data)
                             })
@@ -110,11 +125,11 @@ module.exports = function (io) {
                         socket.broadcast.emit("haveShipperRegister", { "idBill": idBill, "emailShipper": emailShipper, "emaiShop": data.emailShop })
                     }
                     else {
-                        socket.broadcast.emit("shipperBillHaveShip", { "idBill": idBill, "status": 1 })// 1 la Bill da co ship roi
+                        socket.broadcast.emit("shipperBillHaveShip", { "idBill": idBill, "status": 1, "emailShipper": emailShipper })// 1 la Bill da co ship roi
                     }
                 }
                 else {
-                    socket.broadcast.emit("shipperBillHaveShip", { "idBill": idBill, "status": 0 })// 0 laf bill k con ton tai
+                    socket.broadcast.emit("shipperBillHaveShip", { "idBill": idBill, "status": 0, "emailShipper": emailShipper })// 0 laf bill k con ton tai
                 }
             })
         })
