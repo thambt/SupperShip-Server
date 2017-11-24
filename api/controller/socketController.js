@@ -30,16 +30,15 @@ module.exports = function (io) {
             console.log(socket.id + " disconnect");
         })
 
-        // gửi sự kiện cho khách khi shop accept/deny đơn hàng
-        socket.on("shopAcceptBill", function (emailShop, emailCustomer, code, idBill, time) {
-            console.log('shopAcceptBill')
+        // gửi sự kiện cho khách khi shop accept đơn hàng
+        socket.on("shopAcceptBill", function (code, idBill, time) {
             bill.findById(idBill, function (err, data) {
                 if (data != null) {
 
                     var newNoti = {
                         nameActor: data.emailShop,
                         myEmail: data.emailCustomer,
-                        action: code,// 1: accept; 0: deny
+                        action: code,
                         idBill: idBill,
                         read: false,
                         status: 0,
@@ -51,26 +50,13 @@ module.exports = function (io) {
                             console.log("create Noti", data)
                         })
                     if (data != null) {
-                        if (code === 1) {
-                            bill.update({ _id: idBill }, { $set: { "status": code } }, function (err, result) {
-                                if (result != null) {
-                                    socket.broadcast.emit("shopAcceptYourBill", { "code": code, "idBill": idBill, "emailCustomer": emailCustomer , "emailShop": emailShop})
-                                }
-                            })
-                        } else {
-                            bill.remove({ _id: idBill }, function (err, result) {
-                                if (err == null) {
-                                   socket.broadcast.emit("shopAcceptYourBill", { "code": code, "idBill": idBill, "emailCustomer": emailCustomer, "emailShop": emailShop})
-                                }
-                            })
-                        }
-
+                        bill.update({ _id: idBill }, { $set: { "status": code } }, function (err, result) {
+                            if (result != null) {
+                                socket.broadcast.emit("shopAcceptYourBill", { "code": code, "idBill": idBill, "emailCustomer": data.email })
+                            }
+                        })
                     }
 
-                }
-                else {
-                     socket.broadcast.emit("shopBillNotFound", {  "idBill": idBill, "emailShop": emailShop})
-                              
                 }
             })
 
@@ -78,15 +64,25 @@ module.exports = function (io) {
 
 
         // gửi broadcast cho shipper khi có bill mới:
-        socket.on("haveNewBill", function (emailShop, idBill, time, longitude, latitude) {
-          console.log("haveNewBill",idBill)
+        socket.on("haveNewBill", function (idBill, time) {
+            //  console.log(idBill)
             bill.findById(idBill, function (err, data) {
                 if (data != null) {
-                    socket.broadcast.emit("shipperHaveNewBill", {"emailShop" : emailShop, "idBill": idBill, "time": time , "longitude": longitude, "latitude" : latitude })
+                    var newNoti = {
+                        nameActor: data.emailShop,
+                        myEmail: '',
+                        action: 'have new bill',
+                        idBill: idBill,
+                        read: false,
+                        status: 0,
+                        time: time,
+                        method: data.methodTransform
+                    };
+                     socket.broadcast.emit("haveNewBillShip", { "idBill": idBill, "time" : time })
+
+                    // socket.emit("shopAcceptYourBill",code)
                 }
-                else {
-                     socket.broadcast.emit("shopBillNotFound", {  "idBill": idBill, "emailShop": emailShop})
-                }
+                // socket.broadcast.emit("shopAcceptYourBill",data.emailCustomer, idBill,code)
             })
         })
 
@@ -152,7 +148,7 @@ module.exports = function (io) {
                                 })
                             }
                         } else {
-                            socket.broadcast.emit("ShopResponeShopAcceptYou", { "idBill": idBill, "code": 0, "emailShop": newNoti.nameActor, emaiShipper: emailShipper })
+                             socket.broadcast.emit("ShopResponeShopAcceptYou", { "idBill": idBill, "code": 0, "emailShop": newNoti.nameActor, emaiShipper: emailShipper })
                         }
                     })
 
@@ -174,7 +170,7 @@ module.exports = function (io) {
                             phoneReceive: userCustomer.phone,
                             phoneShipper: '',
                             addressReceive: userCustomer.address,
-                            addressSend: result.address,
+                            addressSend: result.addressShop,
                             status: 0,
                             listProduct: element.listProduct,
                             moneyItem: 300000,
@@ -184,7 +180,7 @@ module.exports = function (io) {
                             methodTransform: methodTransform
                         }
                         bill.create(newBill, function (err, result) {
-                            if (err == null) {
+                            if (!err) {
                                 console.log("create Bill", result)
                                 var newNoti = {
                                     myEmail: result.emailShop,

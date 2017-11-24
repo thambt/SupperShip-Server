@@ -155,12 +155,12 @@ module.exports = function (app, passport, io) {
     })
 
     // get All Bill:
-    app.get("/shop/getAllBill", function (req, res) {
-        bill.find(function (err, result) {
-            if (err != null)
-                res.json({ "arrBill": null });
+    app.get("/shop/getAllProduct", function (req, res) {
+        product.find(function (err, result) {
+            if (err)
+                res.send(err)
             else
-                res.json({ "arrBill": result });
+                res.json({ "arrAllProduct": result });
         })
     })
 
@@ -200,7 +200,7 @@ module.exports = function (app, passport, io) {
     //================================================
 
     //============= get bill available for shipper============
-    app.get("/shipper/getBillAvailable", function (req, res) {
+    app.get("/shipper/getBillAvai", function (req, res) {
         bill.find({ status: 1 }, function (err, result) {
             res.json({ "arrBill": result });
             console.log(err)
