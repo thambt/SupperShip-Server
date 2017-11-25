@@ -1,5 +1,4 @@
 var mongoose=require("mongoose");
-var userShipper = require("./userShipper")
 
 var schema = mongoose.Schema;
 var frameBill= new schema({
@@ -15,7 +14,7 @@ var frameBill= new schema({
     category: String,
     weight: String,
     listProduct: [String],
-    listShipperRegister: [userShipper],
+    listShipperRegister: [String],
     methodTransform: Number,
     moneyItem: Number,
     moneyShip: Number,

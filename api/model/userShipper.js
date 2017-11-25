@@ -8,6 +8,7 @@ var userShipper= new schema({
     km: { type: Number, default: 0 },
     level: { type: Number, default: 1 },
 });
-var userShipper=mongoose.model("userShippers",frameUser);
+var userShipper=mongoose.model("userShippers",userShipper);
 
 module.exports=userShipper;
+
