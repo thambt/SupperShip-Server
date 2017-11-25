@@ -9,7 +9,7 @@ module.exports = function (app, passport, io) {
     //================ Product ========================================
     // create Product:
     app.post("/shop/createProduct", function (req, res) {
-        console.log(req.body)
+       // console.log(req.body)
         product.create(req.body, function (err, result) {
             if (err == null)
                 res.json({ "status": true })
@@ -133,7 +133,7 @@ module.exports = function (app, passport, io) {
     app.get("/user/getBill/:email", function (req, res) {
         bill.find({ emailShop: req.params.email }, function (err, result) {
             res.json({ "arrBill": result });
-            // console.log(result);
+             console.log(result);
         })
     })
 
@@ -154,12 +154,13 @@ module.exports = function (app, passport, io) {
     })
 
     // get All Bill:
-    app.get("/shop/getAllProduct", function (req, res) {
-        product.find(function (err, result) {
+    app.get("/shipper/getAllBill", function (req, res) {
+        bill.find(function (err, result) {
+            console.log(result)
             if (err)
-                res.send(err)
+                 res.json({ "arrBill": result });
             else
-                res.json({ "arrAllProduct": result });
+                res.json({ "arrBill": result });
         })
     })
 
@@ -229,13 +230,13 @@ module.exports = function (app, passport, io) {
         var myNoti = new Array();
         user.findOne({ email: req.params.email }, function (err, result) {
             if (result != null) {
-                console.log(result)
+             //   console.log(result)
                 Array.from(result.listNoti).forEach(function (element) {
                     myNoti.push(element)
                 })
             }
             res.json({ "listNoti": myNoti })
-            console.log(myNoti)
+           // console.log(myNoti)
         })
     })
 
@@ -268,7 +269,7 @@ module.exports = function (app, passport, io) {
 
     // update status of Noti
     app.get("/user/updateStatusNoti/:email/:id/:status/:idBill", function (req, res) {
-        console.log('status', req.params.status)
+      //  console.log('status', req.params.status)
         user.update({ email: req.params.email, "listNoti._id": req.params.id }, { $set: { "listNoti.$.status": req.params.status } }, function (err, result) {
             if (err == null) {
                 if (req.params.status == 2) {
