@@ -51,8 +51,8 @@ module.exports = function (io) {
                            // console.log("create Noti", User)
                         })
                     if (data != null) {
-                        if (code === 1) {
-                            bill.update({ _id: idBill }, { $set: { "status": code } }, function (err, result) {
+                        if (code == 1) {
+                            bill.update({ _id: idBill }, { $set: { "status": 0 } }, function (err, result) {
                                 if (result != null) {
                                     socket.broadcast.emit("shopAcceptYourBill", { "code": code, "idBill": idBill, "emailCustomer": emailCustomer, "emailShop": emailShop })
                                 }
@@ -82,7 +82,7 @@ module.exports = function (io) {
             // console.log("haveNewBill",idBill)
             bill.findById(idBill, function (err, data) {
                 if (data != null) {
-                    bill.update({ _id: idBill }, { $set: { "status": 2 } }, function (err, result) {
+                    bill.update({ _id: idBill }, { $set: { "status": 1 } }, function (err, result) {
                         if (result != null) {
                             socket.broadcast.emit("shipperHaveNewBill", { "emailShop": emailShop, "idBill": idBill, "time": time, "longitude": longitude, "latitude": latitude })
                         }
@@ -154,7 +154,7 @@ module.exports = function (io) {
                                     //console.log("create Noti", data)
                                 })
                             if (code == 1) {
-                                bill.update({ _id: idBill }, { $set: { "status": 3, emailShipper: emailShipper, phoneShipper: userShipper.phone } }, function (err, result) {
+                                bill.update({ _id: idBill }, { $set: { "status": 2, emailShipper: emailShipper, phoneShipper: userShipper.phone } }, function (err, result) {
                                     if (result != null) {
                                         socket.broadcast.emit("shipperShopAcceptYou", { "idBill": idBill, "status": 1, "emailShop": data.emailShop, "emaiShipper": emailShipper })
                                         console.log("create Noti", data)
@@ -187,7 +187,7 @@ module.exports = function (io) {
                             phoneShipper: '',
                             addressReceive: userCustomer.address,
                             addressSend: result.address,
-                            status: 0,
+                            status: -1,
                             listProduct: element.listProduct,
                             moneyItem: 300000,
                             moneyShip: 20000,
