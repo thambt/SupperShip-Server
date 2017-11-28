@@ -5,21 +5,21 @@ var frameBill= new schema({
     emailShop:String,
     emailCustomer: String,
     emailShipper: { type: String, default: '' },
-    phoneSend: Number,
-    phoneReceive: Number,
-    phoneShipper: Number,
-    addressReceive: String,
-    addressSend: String,
-    status: Number,
-    category: String,
+    phoneShop: String,
+    phoneCustomer: String,
+    phoneShipper: String,
+    addressShop: String,
+    addressCustomer: String,
     weight: String,
-    listProduct: [String],
-    listShipperRegister: [String],
+    listProductIds: [String],
     methodTransform: Number,
-    moneyItem: Number,
-    moneyShip: Number,
+    moneyItem: String,
+    moneyShip: String,
     time: String,
-    note: String
+    note: String,
+    status: Number,
+
+    listRegisterShippers: [String],
 });
 var bill=mongoose.model("bills",frameBill);
 
