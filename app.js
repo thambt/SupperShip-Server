@@ -45,4 +45,5 @@ socketController(io);
 
 http.listen(port, function () {
     console.log("Server is connecting in port: " + port);
+   //console.log(parseInt('20', 10) - 5);
 })

@@ -4,11 +4,11 @@ var schema = mongoose.Schema;
 var noti= new schema({
     myEmail:String,
     nameActor: String,
-    action: String,
+    emailActor: String,
+    content: String,
     idBill: String,
-    read: Boolean,
+    isRead: Boolean,
     status: Number,
-    methodTransform: Number,
     time: Number
 });
 

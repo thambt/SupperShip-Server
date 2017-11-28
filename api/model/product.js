@@ -13,6 +13,7 @@ var frameProduct= new schema({
     weight: String,
     name: String,
     detail: String,
+    numBuy: { type: String, default: "0" },
     guarantee: { type: String, default: "0" }
 });
 var produce=mongoose.model("products",frameProduct);

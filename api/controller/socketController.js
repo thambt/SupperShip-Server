@@ -31,20 +31,24 @@ module.exports = function (io) {
         })
 
         // gửi sự kiện cho khách khi shop accept/deny đơn hàng
-        socket.on("shopAcceptBill", function (emailShop, emailCustomer, code, idBill, time) {
+        socket.on("shopAcceptBill", function (emailShop, nameShop, emailCustomer, code, idBill, time) {
             //  console.log('shopAcceptBill')
             bill.findById(idBill, function (err, data) {
                 if (data != null) {
-
+                    var action;
+                    if (code == 1)
+                        action = 'chấp nhận'
+                    else
+                        action = 'từ chối'
                     var newNoti = {
-                        nameActor: data.emailShop,
                         myEmail: data.emailCustomer,
-                        action: code,// 1: accept; 0: deny
-                        idBill: idBill,
-                        read: false,
-                        status: 0,
-                        time: time,
-                        method: data.methodTransform
+                        nameActor: nameShop,
+                        emailActor: data.emailShop,
+                        content: action,
+                        idBill: result._id,
+                        isRead: false,
+                        status: code,
+                        time: time
                     };
                     user.findOneAndUpdate({ email: data.emailCustomer }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
                         function (err, User) {
@@ -54,13 +58,13 @@ module.exports = function (io) {
                         if (code == 1) {
                             bill.update({ _id: idBill }, { $set: { "status": 0 } }, function (err, result) {
                                 if (result != null) {
-                                    socket.broadcast.emit("shopAcceptYourBill", { "code": code, "idBill": idBill, "emailCustomer": emailCustomer, "emailShop": emailShop })
+                                    socket.broadcast.emit("customerNoti", { "emailCustomer": emailCustomer })
                                 }
                             })
                         } else {
                             bill.remove({ _id: idBill }, function (err, result) {
                                 if (err == null) {
-                                    socket.broadcast.emit("shopAcceptYourBill", { "code": code, "idBill": idBill, "emailCustomer": emailCustomer, "emailShop": emailShop })
+                                    socket.broadcast.emit("customerNoti", { "emailCustomer": emailCustomer })
                                 }
                             })
                         }
@@ -70,7 +74,6 @@ module.exports = function (io) {
                 }
                 else {
                     socket.broadcast.emit("shopBillNotFound", { "idBill": idBill, "emailShop": emailShop })
-
                 }
             })
 
@@ -95,20 +98,20 @@ module.exports = function (io) {
         })
 
         // Shipper đắng ký nhận đơn hành của shop:
-        socket.on("shipperRegister", function (idBill, emailShipper, time) {
+        socket.on("shipperRegister", function (idBill, emailShipper, nameShipper, time) {
             //  console.log(idBill)
             bill.findById(idBill, function (err, data) {
                 if (data != null) {
                     if (data.status == 1) {
                         var newNoti = {
-                            nameActor: emailShipper,
                             myEmail: data.emailShop,
-                            action: "shipper register",
+                            nameActor: nameShipper,
+                            emailActor: emailShipper,
+                            content: " đăng ký chuyển hàng",
                             idBill: idBill,
-                            read: false,
-                            status: 0,
-                            time: time,
-                            method: data.methodTransform
+                            isRead: false,
+                            status: 1,
+                            time: time
                         };
                         user.findOneAndUpdate({ email: data.emailShop }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
                             function (err, result) {
@@ -119,18 +122,19 @@ module.exports = function (io) {
                                 // console.log("create Noti", data)
                             })
                         // console.log("send ", idBill)
-                        socket.broadcast.emit("haveShipperRegister", { "idBill": idBill, "emailShipper": emailShipper, "emaiShop": data.emailShop })
+                        socket.broadcast.emit("shopNoti", { "emaiShop": data.emailShop })
                     }
                     else {
                         var newNoti = {
-                            nameActor: data.emailShop,
+
                             myEmail: emailShipper,
-                            action: 401,
+                            nameActor: '',
+                            emailActor: data.emailShop,
+                            content: " Đơn hàng bạn muốn chuyển đã có shipper ",
                             idBill: idBill,
-                            read: false,
-                            status: 0,
-                            time: time,
-                            method: data.methodTransform
+                            isRead: false,
+                            status: 401,
+                            time: time
                         };
                         user.findOneAndUpdate({ email: emailShipper }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
                             function (err, result) {
@@ -141,14 +145,14 @@ module.exports = function (io) {
                 }
                 else {
                     var newNoti = {
-                        nameActor: "",
                         myEmail: emailShipper,
-                        action: 400,
+                        nameActor: "",
+                        emailActor: "",
+                        content: " Đơn hàng bạn muốn chuyển đã bị hủy ",
                         idBill: idBill,
-                        read: false,
-                        status: 0,
-                        time: time,
-                        method: data.methodTransform
+                        isRead: false,
+                        status: 400,
+                        time: time
                     };
                     user.findOneAndUpdate({ email: emailShipper }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
                         function (err, result) {
@@ -161,7 +165,7 @@ module.exports = function (io) {
 
 
         // shop accept shipper
-        socket.on("shopAcceptShipper", function (code, idBill, time, emailShipper, emailShop) {
+        socket.on("shopAcceptShipper", function (code, idBill, time, emailShipper, emailShop, nameShop) {
             // console.log("shopAcceptShipper", emailShipper)
             bill.findById(idBill, function (err, data) {
                 if (data != null) {
@@ -169,14 +173,14 @@ module.exports = function (io) {
                         if (err == null) {
                             if (code == 1) {
                                 var newNoti = {
-                                    nameActor: data.emailShop,
                                     myEmail: emailShipper,
-                                    action: 200,
+                                    nameActor: nameShop,
+                                    emailActor: data.emailShop,
+                                    content: " đồng ý yêu cầu chuyển hàng của bạn ",
                                     idBill: idBill,
-                                    read: false,
-                                    status: 0,
-                                    time: time,
-                                    method: data.methodTransform
+                                    isRead: false,
+                                    status: 200,
+                                    time: time
                                 };
                                 user.findOneAndUpdate({ email: emailShipper }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
                                     function (err, data) {
@@ -188,7 +192,7 @@ module.exports = function (io) {
                                     }
                                 })
                             }
-                        } 
+                        }
                     })
 
                 } else {
@@ -223,21 +227,21 @@ module.exports = function (io) {
                         bill.create(newBill, function (err, result) {
                             if (err == null) {
                                 // console.log("create Bill", result)
-                                var newNoti = {
+                                var newNoti = { 
                                     myEmail: result.emailShop,
-                                    nameActor: userCustomer.email,
-                                    action: "mua hang",
+                                    nameActor: userCustomer.name,
+                                    emailActor: userCustomer.email,
+                                    content: "mua hàng",
                                     idBill: result._id,
-                                    read: false,
+                                    isRead: false,
                                     status: 0,
-                                    time: time,
-                                    method: methodTransform
+                                    time: time
                                 };
                                 user.findOneAndUpdate({ email: result.emailShop }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
                                     function (err, data) {
                                         // console.log("create Noti", data)
                                     })
-                                socket.broadcast.emit("SopNewBill", { "emailCustom": userCustomer.email, "phoneCustomer": userCustomer.phone, "emailShop": element.email, "idBill": result._id, "action": " mua hang " })
+                                socket.broadcast.emit("shopNoti", { "emailCustom": userCustomer.email, "phoneCustomer": userCustomer.phone, "emailShop": element.email, "idBill": result._id, "action": " mua hang " })
                             }
                         })
                     }
