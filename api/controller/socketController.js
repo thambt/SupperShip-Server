@@ -117,7 +117,7 @@ module.exports = function (io) {
                             function (err, result) {
                                 //  console.log("create Noti", data)
                             })
-                        bill.findOneAndUpdate({ _id: idBill }, { $push: { listShipperRegister: emailShipper } }, { safe: true, upsert: true, new: true },
+                        bill.findOneAndUpdate({ _id: idBill }, { $push: { listRegisterShippers: emailShipper } }, { safe: true, upsert: true, new: true },
                             function (err, result) {
                                 // console.log("create Noti", data)
                             })

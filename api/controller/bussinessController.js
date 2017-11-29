@@ -164,6 +164,20 @@ module.exports = function (app, passport, io) {
         })
     })
 
+    // get Shipper Register my bill:
+    app.get("/shipper/getshipperRegister/:id/:myEmail", function (req, res) {
+        bill.findById(req.params.id,function (err, result) {
+            console.log(result) 
+            if (result != null) {
+              //  if(result)
+                res.json({ "arrShipper": result.listRegisterShippers });
+            }
+            else
+                res.json({ "arrShipper": result.listRegisterShippers });
+        })
+    })
+
+
     // Update Bill : 
     app.post("/shop/updateBill", function (req, res) {
         bill.update({ _id: req.body.id },
