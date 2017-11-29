@@ -62,6 +62,18 @@ module.exports = function (io) {
                                 }
                             })
                         } else {
+                            data.listProducts.forEach(function(elementItem){
+    
+                                product.findById(elementITem.idProduct, function(err,resultFind){
+                                    if(resultFind != null) {
+                                          product.findOneAndUpdate({ _id: elementITem.idProduct }, { $set: { quantity:elementITem.numBuy +  parseInt(resultFind.quantity, 10) } }, { safe: true, upsert: true, new: true },
+                                                    function (err, data) {
+                                                         //console.log("create Noti", parseInt(result.quantity, 10) - elementITem.numBuy)
+                                                    })
+                                    }
+                                })
+                            })
+                            
                             bill.remove({ _id: idBill }, function (err, result) {
                                 if (err == null) {
                                     socket.broadcast.emit("customerNoti", { "emailCustomer": emailCustomer })
@@ -205,8 +217,9 @@ module.exports = function (io) {
         socket.on("cBuy", function (arrProduct, userCustomer, time, methodTransform) {
             // console.log(time)
             Array.from(arrProduct).forEach(function (element) {
+                console.log("cbuy", element.listProduct)
                 user.findOne({ email: element.email }, function (err, result) {
-                     console.log("find a user", result)
+                   // console.log("find a user", result)
                     if (err == null) {
                         var newBill = {
                             emailShop: element.email,
@@ -217,17 +230,40 @@ module.exports = function (io) {
                             addressCustomer: userCustomer.address,
                             addressShop: result.address,
                             status: -1,
-                            listProductIds: element.listProduct,
+                            listProducts: element.listProduct,
                             moneyItem: 300000,
                             moneyShip: 20000,
                             time: '',
                             note: "String",
                             methodTransform: methodTransform
-                        } 
+                        }
                         bill.create(newBill, function (err, result) {
                             if (err == null) {
+                                //console.log("find product","goto")
+                                // trừ số lượng sản phầm còn trong kho hàng cua shop
+                                element.listProduct.forEach(function (elementITem) {
+                                    // console.log("find product",elementITem)
+                                    product.findById(elementITem.idProduct, function (err, result) {
+                                       // console.log("result product",result)
+                                        if (result != null) {
+                                           //  console.log("create Noti", parseInt(result.quantity, 10) - elementITem.numBuy)
+                                            if (parseInt(result.quantity, 10) >= elementITem.numBuy) {
+                                                 product.findOneAndUpdate({ _id: elementITem.idProduct }, { $set: { quantity: parseInt(result.quantity, 10) - elementITem.numBuy } }, { safe: true, upsert: true, new: true },
+                                                    function (err, data) {
+                                                         //console.log("create Noti", parseInt(result.quantity, 10) - elementITem.numBuy)
+                                                    })
+                                            } else {
+                                                product.findOneAndUpdate({ _id: elementITem.idProduct }, { $set: { quantity: 0 } }, { safe: true, upsert: true, new: true },
+                                                    function (err, data) {
+                                                         //console.log("create Noti", parseInt(result.quantity, 10) - elementITem.numBuy)
+                                                    })
+                                            }
+                                               
+                                        }
+                                    })
+                                })
                                 // console.log("create Bill", result)
-                                var newNoti = { 
+                                var newNoti = {
                                     myEmail: result.emailShop,
                                     nameActor: userCustomer.name,
                                     emailActor: userCustomer.email,
