@@ -45,7 +45,7 @@ module.exports = function (io) {
                         nameActor: nameShop,
                         emailActor: data.emailShop,
                         content: action,
-                        idBill: result._id,
+                        idBill: idBill,
                         isRead: false,
                         status: code,
                         time: time
@@ -222,8 +222,7 @@ module.exports = function (io) {
                             moneyShip: 20000,
                             time: '',
                             note: "String",
-                            methodTransform: methodTransform,
-                            listRegisterShippers: ""
+                            methodTransform: methodTransform
                         } 
                         bill.create(newBill, function (err, result) {
                             if (err == null) {
