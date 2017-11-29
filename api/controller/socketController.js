@@ -206,24 +206,25 @@ module.exports = function (io) {
             // console.log(time)
             Array.from(arrProduct).forEach(function (element) {
                 user.findOne({ email: element.email }, function (err, result) {
-                    // console.log("find a user", result)
+                     console.log("find a user", result)
                     if (err == null) {
                         var newBill = {
                             emailShop: element.email,
                             emailCustomer: userCustomer.email,
-                            phoneSend: result.phone,
-                            phoneReceive: userCustomer.phone,
+                            phoneShop: result.phone,
+                            phoneCustomer: userCustomer.phone,
                             phoneShipper: '',
-                            addressReceive: userCustomer.address,
-                            addressSend: result.address,
+                            addressCustomer: userCustomer.address,
+                            addressShop: result.address,
                             status: -1,
-                            listProduct: element.listProduct,
+                            listProductIds: element.listProduct,
                             moneyItem: 300000,
                             moneyShip: 20000,
                             time: '',
                             note: "String",
-                            methodTransform: methodTransform
-                        }
+                            methodTransform: methodTransform,
+                            listRegisterShippers: ""
+                        } 
                         bill.create(newBill, function (err, result) {
                             if (err == null) {
                                 // console.log("create Bill", result)
