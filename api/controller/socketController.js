@@ -62,18 +62,18 @@ module.exports = function (io) {
                                 }
                             })
                         } else {
-                            data.listProducts.forEach(function(elementItem){
-    
-                                product.findById(elementITem.idProduct, function(err,resultFind){
-                                    if(resultFind != null) {
-                                          product.findOneAndUpdate({ _id: elementITem.idProduct }, { $set: { quantity:elementITem.numBuy +  parseInt(resultFind.quantity, 10) } }, { safe: true, upsert: true, new: true },
-                                                    function (err, data) {
-                                                         //console.log("create Noti", parseInt(result.quantity, 10) - elementITem.numBuy)
-                                                    })
+                            data.listProducts.forEach(function (elementItem) {
+
+                                product.findById(elementITem.idProduct, function (err, resultFind) {
+                                    if (resultFind != null) {
+                                        product.findOneAndUpdate({ _id: elementITem.idProduct }, { $set: { quantity: elementITem.numBuy + parseInt(resultFind.quantity, 10) } }, { safe: true, upsert: true, new: true },
+                                            function (err, data) {
+                                                //console.log("create Noti", parseInt(result.quantity, 10) - elementITem.numBuy)
+                                            })
                                     }
                                 })
                             })
-                            
+
                             bill.remove({ _id: idBill }, function (err, result) {
                                 if (err == null) {
                                     socket.broadcast.emit("customerNoti", { "emailCustomer": emailCustomer })
@@ -129,7 +129,11 @@ module.exports = function (io) {
                             function (err, result) {
                                 //  console.log("create Noti", data)
                             })
-                        bill.findOneAndUpdate({ _id: idBill }, { $push: { listRegisterShippers: emailShipper } }, { safe: true, upsert: true, new: true },
+                        var newShipper = {
+                            emailShipper: emailShipper,
+                            nameShipper: nameShipper
+                        };
+                        bill.findOneAndUpdate({ _id: idBill }, { $push: { listRegisterShippers: newShipper } }, { safe: true, upsert: true, new: true },
                             function (err, result) {
                                 // console.log("create Noti", data)
                             })
@@ -219,7 +223,7 @@ module.exports = function (io) {
             Array.from(arrProduct).forEach(function (element) {
                 console.log("cbuy", element.listProduct)
                 user.findOne({ email: element.email }, function (err, result) {
-                   // console.log("find a user", result)
+                    // console.log("find a user", result)
                     if (err == null) {
                         var newBill = {
                             emailShop: element.email,
@@ -244,21 +248,21 @@ module.exports = function (io) {
                                 element.listProduct.forEach(function (elementITem) {
                                     // console.log("find product",elementITem)
                                     product.findById(elementITem.idProduct, function (err, result) {
-                                       // console.log("result product",result)
+                                        // console.log("result product",result)
                                         if (result != null) {
-                                           //  console.log("create Noti", parseInt(result.quantity, 10) - elementITem.numBuy)
+                                            //  console.log("create Noti", parseInt(result.quantity, 10) - elementITem.numBuy)
                                             if (parseInt(result.quantity, 10) >= elementITem.numBuy) {
-                                                 product.findOneAndUpdate({ _id: elementITem.idProduct }, { $set: { quantity: parseInt(result.quantity, 10) - elementITem.numBuy } }, { safe: true, upsert: true, new: true },
+                                                product.findOneAndUpdate({ _id: elementITem.idProduct }, { $set: { quantity: parseInt(result.quantity, 10) - elementITem.numBuy } }, { safe: true, upsert: true, new: true },
                                                     function (err, data) {
-                                                         //console.log("create Noti", parseInt(result.quantity, 10) - elementITem.numBuy)
+                                                        //console.log("create Noti", parseInt(result.quantity, 10) - elementITem.numBuy)
                                                     })
                                             } else {
                                                 product.findOneAndUpdate({ _id: elementITem.idProduct }, { $set: { quantity: 0 } }, { safe: true, upsert: true, new: true },
                                                     function (err, data) {
-                                                         //console.log("create Noti", parseInt(result.quantity, 10) - elementITem.numBuy)
+                                                        //console.log("create Noti", parseInt(result.quantity, 10) - elementITem.numBuy)
                                                     })
                                             }
-                                               
+
                                         }
                                     })
                                 })

@@ -16,7 +16,8 @@ var frameUser= new schema({
     longitude: { type: Number, default: -1 },
     latitude: { type: Number, default: -1 },
     licen: { type: String, default: 0 },
-    listNoti: [noti]
+    listNoti: [noti],
+    levelShipper: { type: Number, default: 1 }
 });
 var user=mongoose.model("users",frameUser);
 

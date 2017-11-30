@@ -1,5 +1,6 @@
 var mongoose=require("mongoose");
 var itemProduct = require("./itemProduct")
+var infoShipper = require("./infoShipper")
 
 var schema = mongoose.Schema;
 var frameBill= new schema({
@@ -20,7 +21,7 @@ var frameBill= new schema({
     note: String,
     status: Number,
 
-    listRegisterShippers: [String],
+    listRegisterShippers: [infoShipper],
 });
 var bill=mongoose.model("bills",frameBill);
 
