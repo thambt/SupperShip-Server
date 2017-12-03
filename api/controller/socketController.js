@@ -32,8 +32,9 @@ module.exports = function (io) {
 
         // gửi sự kiện cho khách khi shop accept/deny đơn hàng
         socket.on("shopAcceptBill", function (emailShop, nameShop, emailCustomer, code, idBill, time) {
-            //  console.log('shopAcceptBill')
+              console.log('shopAcceptBill', idBill)
             bill.findById(idBill, function (err, data) {
+               // console.log("err",data.emailCustomer)
                 if (data != null) {
                     var action;
                     if (code == 1)
@@ -185,6 +186,7 @@ module.exports = function (io) {
         socket.on("shopAcceptShipper", function (code, idBill, time, emailShipper, emailShop, nameShop) {
             // console.log("shopAcceptShipper", emailShipper)
             bill.findById(idBill, function (err, data) {
+                
                 if (data != null) {
                     user.findOne({ email: emailShipper }, function (err, userShipper) {
                         if (err == null) {
@@ -238,7 +240,7 @@ module.exports = function (io) {
                                             function (err, data) {
                                                 //console.log("create Noti", data)
                                             })
-                                        socket.broadcast.emit("customerNoti", { "emailCustomer": emailCustomer })
+                                        socket.broadcast.emit("customerNoti", { "emailCustomer": data.emailCustomer })
                                         socket.broadcast.emit("shipperShopAcceptYou", { "idBill": idBill, "status": 1, "emailShop": emailShop, "emailShipper": emailShipper })
                                     }
                                 })
