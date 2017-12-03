@@ -156,10 +156,10 @@ module.exports = function (io) {
                             myEmail: emailShipper,
                             nameActor: '',
                             emailActor: data.emailShop,
-                            content: " Đơn hàng bạn muốn chuyển đã có shipper ",
+                            content: " Bạn bị từ chối giao hàng",
                             idBill: idBill,
                             isRead: false,
-                            status: 401,
+                            status: 4,
                             time: time
                         };
                         user.findOneAndUpdate({ email: emailShipper }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
@@ -174,10 +174,10 @@ module.exports = function (io) {
                         myEmail: emailShipper,
                         nameActor: "",
                         emailActor: "",
-                        content: " Đơn hàng bạn muốn chuyển đã bị hủy ",
+                        content: " Bạn bị từ chối giao hàng ",
                         idBill: idBill,
                         isRead: false,
-                        status: 400,
+                        status: 4,
                         time: time
                     };
                     user.findOneAndUpdate({ email: emailShipper }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
@@ -191,19 +191,19 @@ module.exports = function (io) {
 
 
         // shop accept shipper
-        socket.on("shopAcceptShipper", function (code, idBill, time, emailShipper, emailShop, nameShop) {
+        socket.on("shopAcceptShipper", function ( idBill, time, emailShipper, emailShop, nameShop) {
             // console.log("shopAcceptShipper", emailShipper)
             bill.findById(idBill, function (err, data) {
 
                 if (data != null) {
                     user.findOne({ email: emailShipper }, function (err, userShipper) {
                         if (err == null) {
-                            if (code == 1) {
+                            
                                 var newNoti = {
                                     myEmail: emailShipper,
                                     nameActor: nameShop,
                                     emailActor: data.emailShop,
-                                    content: "Bạn được nhận giao hàng",
+                                    content: "Bạn được nhận giao hàng", 
                                     idBill: idBill,
                                     isRead: false,
                                     status: 4,
@@ -252,7 +252,7 @@ module.exports = function (io) {
                                         socket.broadcast.emit("shipperShopAcceptYou", { "idBill": idBill, "status": 1, "emailShop": emailShop, "emailShipper": emailShipper })
                                     }
                                 })
-                            }
+                            
                         }
                     })
 
