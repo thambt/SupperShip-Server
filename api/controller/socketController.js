@@ -32,9 +32,9 @@ module.exports = function (io) {
 
         // gửi sự kiện cho khách khi shop accept/deny đơn hàng
         socket.on("shopAcceptBill", function (emailShop, nameShop, emailCustomer, code, idBill, time) {
-              console.log('shopAcceptBill', idBill)
+            console.log('shopAcceptBill', idBill)
             bill.findById(idBill, function (err, data) {
-               // console.log("err",data.emailCustomer)
+                // console.log("err",data.emailCustomer)
                 if (data != null) {
                     var action;
                     if (code == 1)
@@ -82,6 +82,14 @@ module.exports = function (io) {
                             })
                         }
                     }
+ 
+                    // Xóa notify
+                    user.update({ email: emailShop },
+                        { $pull: { "listNoti": { idBill: idBill } } },
+                        function (err, result) {
+                            if (err != null)
+                                console.log(err)
+                        })
 
                 }
                 else {
@@ -186,7 +194,7 @@ module.exports = function (io) {
         socket.on("shopAcceptShipper", function (code, idBill, time, emailShipper, emailShop, nameShop) {
             // console.log("shopAcceptShipper", emailShipper)
             bill.findById(idBill, function (err, data) {
-                
+
                 if (data != null) {
                     user.findOne({ email: emailShipper }, function (err, userShipper) {
                         if (err == null) {
