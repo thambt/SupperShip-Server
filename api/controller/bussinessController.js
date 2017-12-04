@@ -9,7 +9,7 @@ module.exports = function (app, passport, io) {
     //================ Product ========================================
     // create Product:
     app.post("/shop/createProduct", function (req, res) {
-       // console.log(req.body)
+        // console.log(req.body)
         product.create(req.body, function (err, result) {
             if (err == null)
                 res.json({ "status": true })
@@ -67,7 +67,7 @@ module.exports = function (app, passport, io) {
 
     // Update Product : 
     app.post("/shop/updateProduct", function (req, res) {
-//console.log()
+        //console.log()
         product.update({ _id: req.body._id },
             {
                 $set: {
@@ -82,7 +82,7 @@ module.exports = function (app, passport, io) {
                     guarantee: req.body.guarantee
                 }
             }, function (err, result) {
-                console.log( result)
+                console.log(result)
                 if (err == null)
                     res.json({ "status": true })
                 else
@@ -133,7 +133,7 @@ module.exports = function (app, passport, io) {
     app.get("/user/getBill/:email", function (req, res) {
         bill.find({ emailShop: req.params.email }, function (err, result) {
             res.json({ "arrBill": result });
-             console.log(result);
+            console.log(result);
         })
     })
 
@@ -158,7 +158,7 @@ module.exports = function (app, passport, io) {
         bill.find(function (err, result) {
             console.log(result)
             if (err)
-                 res.json({ "arrBill": result });
+                res.json({ "arrBill": result });
             else
                 res.json({ "arrBill": result });
         })
@@ -166,10 +166,10 @@ module.exports = function (app, passport, io) {
 
     // get Shipper Register my bill:
     app.get("/shipper/getshipperRegister/:id/:myEmail", function (req, res) {
-        bill.findById(req.params.id,function (err, result) {
-            console.log(result) 
+        bill.findById(req.params.id, function (err, result) {
+            console.log(result)
             if (result != null) {
-              //  if(result)
+                //  if(result)
                 res.json({ "arrShipper": result.listRegisterShippers });
             }
             else
@@ -244,13 +244,13 @@ module.exports = function (app, passport, io) {
         var myNoti = new Array();
         user.findOne({ email: req.params.email }, function (err, result) {
             if (result != null) {
-             //   console.log(result)
+                //   console.log(result)
                 Array.from(result.listNoti).forEach(function (element) {
                     myNoti.push(element)
                 })
             }
             res.json({ "listNoti": myNoti })
-           // console.log(myNoti)
+            // console.log(myNoti)
         })
     })
 
@@ -283,7 +283,7 @@ module.exports = function (app, passport, io) {
 
     // update status of Noti
     app.get("/user/updateStatusNoti/:email/:id/:status/:idBill", function (req, res) {
-      //  console.log('status', req.params.status)
+        //  console.log('status', req.params.status)
         user.update({ email: req.params.email, "listNoti._id": req.params.id }, { $set: { "listNoti.$.status": req.params.status } }, function (err, result) {
             if (err == null) {
                 if (req.params.status == 2) {
@@ -303,6 +303,28 @@ module.exports = function (app, passport, io) {
         })
     })
     //==================================================================
+
+    // get My Shipper
+    app.get("/shop/getMyShipper/:email/:idBill", function (req, res) {
+        bill.find({ _id: req.params.idBill }, function (err, result) {
+            if (result != null) {
+                if (result.emailShop == req.params.email) {
+                    user.find({ email: result.emailShipper }, function (err, shipper) {
+                        if (shipper != null) {
+                            res.json({ "status": false , "longitude": shipper.longitude, "latitude": shipper.latitude})
+                        } {
+                            res.json({ "status": false })
+                        }
+                    })
+                } else {
+                    res.json({ "status": false })
+                }
+            }
+            else {
+                res.json({ "status": false })
+            }
+        })
+    })
 
 }
 //==================================================================================
