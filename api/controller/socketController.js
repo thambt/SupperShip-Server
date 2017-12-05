@@ -32,10 +32,18 @@ module.exports = function (io) {
 
         // gửi sự kiện cho khách khi shop accept/deny đơn hàng
         socket.on("shopAcceptBill", function (emailShop, nameShop, emailCustomer, code, idBill, time) {
-            console.log('shopAcceptBill', code)
+           //  console.log(idBill) // { $pull: { results: { score: 8 , item: "B" } } },
+            user.update({ email: emailShop },
+                { $pull: { listNoti: { idBill: idBill } } },
+                function (err, result) {
+                
+                    console.log(idBill)
+                    if (err != null)
+                        console.log(err)
+                })
             bill.findById(idBill, function (err, data) {
-                // console.log("err",data.emailCustomer)
                 if (data != null) {
+                    console.log("err", data.emailCustomer)
                     var action;
                     if (code == 1)
                         action = 'Đơn hàng đã được xác nhận'
@@ -81,20 +89,17 @@ module.exports = function (io) {
                                 }
                             })
                         }
+
                     }
 
                     // Xóa notify
-                    user.update({ email: emailShop },
-                        { $pull: { "listNoti": { idBill: idBill } } },
-                        function (err, result) {
-                            if (err != null)
-                                console.log(err)
-                        })
+
+
 
                 }
-               /* else {
-                    socket.broadcast.emit("shopBillNotFound", { "idBill": idBill, "emailShop": emailShop })
-                }*/
+                /* else {
+                     socket.broadcast.emit("shopBillNotFound", { "idBill": idBill, "emailShop": emailShop })
+                 }*/
             })
 
         })
@@ -293,16 +298,16 @@ module.exports = function (io) {
 
 
         // location shipper change (currentUser.getEmail(), location.getLongitude(),location.getLatitude())
-        socket.on("shipperChangLocation", function ( emailShipper, longitude, latitude) {
+        socket.on("shipperChangLocation", function (emailShipper, longitude, latitude) {
             console.log("shipperChangLocation", emailShipper)
-            user.update({ email: emailShipper }, { $set: { "longitude": longitude, "latitude": latitude} }, function (err, result) {
+            user.update({ email: emailShipper }, { $set: { "longitude": longitude, "latitude": latitude } }, function (err, result) {
                 console.log("shipper location chảng", result)
-                socket.broadcast.emit("shopShipperLocation", { "idBill": idBill, "longitude" : longitude, "latitude" : latitude })
+                socket.broadcast.emit("shopShipperLocation", { "idBill": idBill, "longitude": longitude, "latitude": latitude })
             })
 
         })
 
-         // shop accept shipper 
+        // shop accept shipper 
         socket.on("shopBillShipping", function (idBill, time, emailShipper, emailShop, nameShop) {
             console.log("shopBillShipping", emailShipper)
             bill.findById(idBill, function (err, data) {
