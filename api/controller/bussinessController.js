@@ -305,20 +305,28 @@ module.exports = function (app, passport, io) {
     //==================================================================
 
     // get My Shipper
-    app.get("/shop/getMyShipper/:email/:idBill", function (req, res) {
-        bill.find({ _id: req.params.idBill }, function (err, result) {
+    app.get("/shop/getMyShipper/:email", function (req, res) {
+          myShipper = new Array();
+         
+        bill.find({ emailShop: req.params.email }, function (err, result) {
             if (result != null) {
-                if (result.emailShop == req.params.email) {
-                    user.find({ email: result.emailShipper }, function (err, shipper) {
-                        if (shipper != null) {
-                            res.json({ "status": false , "longitude": shipper.longitude, "latitude": shipper.latitude})
-                        } {
-                            res.json({ "status": false })
-                        }
-                    })
-                } else {
-                    res.json({ "status": false })
-                }
+                result.forEach(function (elementBill) {
+                    if (elementBill.status == 3) {
+                       
+                        user.find({ email: elementBill.emailShipper }, function (err, shipper) {
+                            if (shipper != null) {
+                                 newShipper = {
+                                     "idBill": elementBill._id, "longitude": shipper.longitude, "latitude": shipper.latitude
+                                }
+                                myShipper.push(newShipper)
+                                tempshipper = newShipper
+                            }
+                            console.log("oooo", newShipper)
+                        })
+                        console.log("oooo", newShipper)
+                    }
+                })
+                 res.json({ "status": true, "listShipper": myShipper })
             }
             else {
                 res.json({ "status": false })

@@ -32,7 +32,7 @@ module.exports = function (io) {
 
         // gửi sự kiện cho khách khi shop accept/deny đơn hàng
         socket.on("shopAcceptBill", function (emailShop, nameShop, emailCustomer, code, idBill, time) {
-            console.log('shopAcceptBill', idBill)
+            console.log('shopAcceptBill', code)
             bill.findById(idBill, function (err, data) {
                 // console.log("err",data.emailCustomer)
                 if (data != null) {
@@ -92,9 +92,9 @@ module.exports = function (io) {
                         })
 
                 }
-                else {
+               /* else {
                     socket.broadcast.emit("shopBillNotFound", { "idBill": idBill, "emailShop": emailShop })
-                }
+                }*/
             })
 
         })
@@ -297,6 +297,7 @@ module.exports = function (io) {
             console.log("shipperChangLocation", emailShipper)
             user.update({ email: emailShipper }, { $set: { "longitude": longitude, "latitude": latitude} }, function (err, result) {
                 console.log("shipper location chảng", result)
+                socket.broadcast.emit("shopShipperLocation", { "idBill": idBill, "longitude" : longitude, "latitude" : latitude })
             })
 
         })
