@@ -87,13 +87,14 @@ module.exports = function (app, passport) {
                     "name": req.body.name,
                     "phone": req.body.phone,
                     "address": req.body.address,
-                    "image": req.body.image
+                    "image": req.body.image,
+                    "gender" :req.body.gender
                 }
             }, function (err, result) {
                 if (err == null)
                     res.json({ "status": true })
             })
-    })
+    }) 
 
     // logout
     app.get('/logout', function (req, res) {
