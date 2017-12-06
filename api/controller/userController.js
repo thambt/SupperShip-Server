@@ -83,12 +83,25 @@ module.exports = function (app, passport) {
         user.update({ email: req.body.email },
             {
                 $set: {
-                    "password": req.body.password,
                     "name": req.body.name,
                     "phone": req.body.phone,
                     "address": req.body.address,
                     "image": req.body.image,
-                    "gender" :req.body.gender
+                    "gender" :req.body.gender,
+                    "licen" : req.body.licen
+                }
+            }, function (err, result) {
+                if (err == null)
+                    res.json({ "status": true })
+            })
+    }) 
+
+    // update pwd user
+    app.post("/user/updatePwd", function (req, res) {
+        user.update({ email: req.body.email },
+            {
+                $set: {
+                    "password": req.body.password
                 }
             }, function (err, result) {
                 if (err == null)
