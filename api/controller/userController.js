@@ -55,7 +55,6 @@ module.exports = function (app, passport) {
                 user.create(req.body, function (err, result) {
                     if (!err)
                         res.json({ "status": true })
-
                 })
             }
             else
@@ -87,14 +86,14 @@ module.exports = function (app, passport) {
                     "phone": req.body.phone,
                     "address": req.body.address,
                     "image": req.body.image,
-                    "gender" :req.body.gender,
-                    "licen" : req.body.licen
+                    "gender": req.body.gender,
+                    "licen": req.body.licen
                 }
             }, function (err, result) {
                 if (err == null)
                     res.json({ "status": true })
             })
-    }) 
+    })
 
     // update pwd user
     app.post("/user/updatePwd", function (req, res) {
@@ -107,7 +106,7 @@ module.exports = function (app, passport) {
                 if (err == null)
                     res.json({ "status": true })
             })
-    }) 
+    })
 
     // logout
     app.get('/logout', function (req, res) {

@@ -304,35 +304,34 @@ module.exports = function (app, passport, io) {
     })
     //==================================================================
 
-    // get My Shipper
-    app.get("/shop/getMyShipper/:email", function (req, res) {
-          myShipper = new Array();
-         
+    // get My Bill Shipping
+    app.get("/shop/getMyBillShipping/:email", function (req, res) {
         bill.find({ emailShop: req.params.email }, function (err, result) {
-            if (result != null) {
-                result.forEach(function (elementBill) {
-                    if (elementBill.status == 3) {
-                       
-                        user.find({ email: elementBill.emailShipper }, function (err, shipper) {
-                            if (shipper != null) {
-                                 newShipper = {
-                                     "idBill": elementBill._id, "longitude": shipper.longitude, "latitude": shipper.latitude
-                                }
-                                myShipper.push(newShipper)
-                                tempshipper = newShipper
-                            }
-                            console.log("oooo", newShipper)
-                        })
-                        console.log("oooo", newShipper)
+            if (result != null) {                   
+                 myBill = new Array();
+                result.forEach(function (elementBill) {   
+                    if (elementBill.status == 3) {  
+                       myBill.push(elementBill) 
                     }
                 })
-                 res.json({ "status": true, "listShipper": myShipper })
+                 res.json({ "status": true, "arrBill": myBill })
             }
-            else {
+            else { 
                 res.json({ "status": false })
             }
         })
     })
 
-}
+    // get My shipper locationlocation
+    app.get("/shop/getMyShipper/:emailShipper", function (req, res) {
+        user.findOne({ email: req.params.emailShipper }, function (err, result) {
+            if (result != null) {                   
+                 res.json({ "status": true, "longitude": result.longitude, "latitude": result.latitude })
+            }
+            else { 
+                res.json({ "status": false })
+            }
+        })
+    })
+} 
 //==================================================================================
