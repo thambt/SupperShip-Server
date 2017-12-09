@@ -51,7 +51,7 @@ console.log("co nguoi ket noi", data);
 
         // gửi sự kiện cho khách khi shop accept/deny đơn hàng
         socket.on("shopAcceptBill", function (emailShop, nameShop, emailCustomer, code, idBill, time) {
-            //  console.log(idBill) // { $pull: { results: { score: 8 , item: "B" } } },
+             console.log(idBill) // { $pull: { results: { score: 8 , item: "B" } } },
             user.update({ email: emailShop },
                 { $pull: { listNoti: { idBill: idBill } } },
                 function (err, result) {
@@ -86,7 +86,8 @@ console.log("co nguoi ket noi", data);
                         if (code == 1) {
                             bill.update({ _id: idBill }, { $set: { "status": 0 } }, function (err, result) {
                                 if (result != null) {
-                                    socket.broadcast.emit("customerNoti", { "emailCustomer": emailCustomer })
+                                    console.log("acceptBill", data.emailCustomer)
+                                    socket.broadcast.emit("customerNoti", { "emailCustomer": data.emailCustomer })
                                 }
                             })
                         } else {
@@ -104,6 +105,7 @@ console.log("co nguoi ket noi", data);
 
                             bill.remove({ _id: idBill }, function (err, result) {
                                 if (err == null) {
+                                     console.log("acceptBill")
                                     socket.broadcast.emit("customerNoti", { "emailCustomer": emailCustomer })
                                 }
                             })
@@ -166,8 +168,8 @@ console.log("co nguoi ket noi", data);
                             function (err, result) {
                                 // console.log("create Noti", data)
                             })
-                        // console.log("send ", idBill)
-                        socket.broadcast.emit("shopNoti", { "emaiShop": data.emailShop })
+                         console.log("send ", data.emailShop)
+                        socket.broadcast.emit("shopNoti", { "emailShop": data.emailShop })
                     }
                     else {
                         var newNoti = {
