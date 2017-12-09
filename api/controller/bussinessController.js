@@ -15,7 +15,7 @@ module.exports = function (app, passport, io) {
                 res.json({ "status": true })
             else
                 res.json({ "status": false })
-            console.log(err)
+           // console.log(err)
         })
     })
 
@@ -82,7 +82,7 @@ module.exports = function (app, passport, io) {
                     guarantee: req.body.guarantee
                 }
             }, function (err, result) {
-                console.log(result)
+              //  console.log(result)
                 if (err == null)
                     res.json({ "status": true })
                 else
@@ -133,7 +133,7 @@ module.exports = function (app, passport, io) {
     app.get("/user/getBill/:email", function (req, res) {
         bill.find({ emailShop: req.params.email }, function (err, result) {
             res.json({ "arrBill": result });
-            console.log(result);
+           // console.log(result);
         })
     })
 
@@ -149,14 +149,14 @@ module.exports = function (app, passport, io) {
     app.get("/user/getBillById/:id", function (req, res) {
         bill.findById(req.params.id, function (err, result) {
             res.json({ "Bill": result });
-            console.log(result);
+          //  console.log(result);
         })
     })
 
     // get All Bill:
     app.get("/shipper/getAllBill", function (req, res) {
         bill.find(function (err, result) {
-            console.log(result)
+          //  console.log(result)
             if (err)
                 res.json({ "arrBill": result });
             else
@@ -167,7 +167,7 @@ module.exports = function (app, passport, io) {
     // get Shipper Register my bill:
     app.get("/shipper/getshipperRegister/:id/:myEmail", function (req, res) {
         bill.findById(req.params.id, function (err, result) {
-            console.log(result)
+           // console.log(result)
             if (result != null) {
                 //  if(result)
                 res.json({ "arrShipper": result.listRegisterShippers });
@@ -217,14 +217,14 @@ module.exports = function (app, passport, io) {
     app.get("/shipper/getBillAvai", function (req, res) {
         bill.find({ status: 1 }, function (err, result) {
             res.json({ "arrBill": result });
-            console.log(err)
+         //   console.log(err)
         })
     })
 
     // Delete Bill:
     app.get("/shop/deleteBill/:id", function (req, res) {
         bill.remove({ _id: req.params.id }, function (err, result) {
-            console.log(err)
+           // console.log(err)
             if (err == null) {
                 res.json({ "status": true })
             }
@@ -325,7 +325,8 @@ module.exports = function (app, passport, io) {
     // get My shipper locationlocation
     app.get("/shop/getMyShipper/:emailShipper", function (req, res) {
         user.findOne({ email: req.params.emailShipper }, function (err, result) {
-            if (result != null) {                   
+            if (result != null) {  
+                
                  res.json({ "status": true, "longitude": result.longitude, "latitude": result.latitude })
             }
             else { 
@@ -333,5 +334,21 @@ module.exports = function (app, passport, io) {
             }
         })
     })
+
+    //get Shipper Near 
+    app.get("/shop/getShipperNearMe", function (req, res) {
+// console.log("ooooo")
+        user.find({isOnline: true, kindUser: 2},function (err, result) {
+             console.log(result)
+            if (result == null)
+            {
+               
+                res.json({ "arrShipperNear": null, "status": false });
+            }
+            else
+                res.json({ "arrShipperNear": result, "status": true });
+        })
+    })
+
 } 
 //==================================================================================

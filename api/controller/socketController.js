@@ -16,7 +16,7 @@ module.exports = function (io) {
                     isOnline: true
                 }
             }, function (err, result) {
-                console.log(result)
+               // console.log(result)
             })
              socket.broadcast.emit("shopYourShipper", { "emailShipper": data, "online": true})
 console.log("co nguoi ket noi", data);
@@ -43,7 +43,7 @@ console.log("co nguoi ket noi", data);
                     isOnline: false
                 }
             }, function (err, result) {
-                console.log(result)
+               // console.log(result)
             })
              socket.broadcast.emit("shopYourShipper", { "emailShipper": socket.id, "online": false})
             console.log(socket.id + " disconnect");
@@ -56,7 +56,7 @@ console.log("co nguoi ket noi", data);
                 { $pull: { listNoti: { idBill: idBill } } },
                 function (err, result) {
 
-                    console.log(idBill)
+                   // console.log(idBill)
                     if (err != null)
                         console.log(err)
                 })
@@ -211,7 +211,7 @@ console.log("co nguoi ket noi", data);
 
         // shop accept shipper
         socket.on("shopAcceptShipper", function (idBill, time, emailShipper, emailShop, nameShop) {
-            console.log("shopAcceptShipper", emailShipper)
+        //    console.log("shopAcceptShipper", emailShipper)
             bill.findById(idBill, function (err, data) {
                 if (data != null) {
                     user.findOne({ email: emailShipper }, function (err, userShipper) {
@@ -251,7 +251,7 @@ console.log("co nguoi ket noi", data);
                             })
                             bill.update({ _id: idBill }, { $set: { "status": 2, emailShipper: emailShipper, phoneShipper: userShipper.phone } }, function (err, result) {
                                 if (result != null) {
-                                    console.log("info Bill", data)
+                                  //  console.log("info Bill", data)
                                     var newNoti = {
                                         myEmail: data.emailCustomer,
                                         nameActor: nameShop,
@@ -275,7 +275,7 @@ console.log("co nguoi ket noi", data);
                     bill.update({ _id: idBill },
                         { $pull: { "listRegisterShippers": {} } },
                         function (err, result) {
-                            console.log('delets shipper register', result)
+                           // console.log('delets shipper register', result)
                         })
 
                 } else {
@@ -288,9 +288,9 @@ console.log("co nguoi ket noi", data);
 
         // location shipper change (currentUser.getEmail(), location.getLongitude(),location.getLatitude())
         socket.on("shipperChangLocation", function (emailShipper, longitude, latitude) {
-            console.log("shipperChangLocation", emailShipper)
+          //  console.log("shipperChangLocation", emailShipper)
             user.update({ email: emailShipper }, { $set: { "longitude": longitude, "latitude": latitude } }, function (err, result) {
-                console.log("shipper location chảng", result)
+               // console.log("shipper location chảng", result)
                 socket.broadcast.emit("shopShipperLocation", { "emailShipper": emailShipper, "longitude": longitude, "latitude": latitude })
             })
 
@@ -301,7 +301,7 @@ console.log("co nguoi ket noi", data);
             console.log("shopBillShipping", emailShipper)
             bill.findById(idBill, function (err, data) {
                 if (data != null) {
-                    bill.update({ _id: idBill }, { $set: { "status": 3, emailShipper: emailShipper, phoneShipper: userShipper.phone } }, function (err, result) {
+                    bill.update({ _id: idBill }, { $set: { "status": 3} }, function (err, result) {
                         if (result != null) {
 
                             // console.log("info Bill", data)
