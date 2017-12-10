@@ -18,7 +18,7 @@ module.exports = function (io) {
             }, function (err, result) {
                // console.log(result)
             })
-             socket.broadcast.emit("shopYourShipper", { "emailShipper": data, "online": true})
+             socket.broadcast.emit("shopYourShipper", { "emailShipper": data, "isOnline": true})
 console.log("co nguoi ket noi", data);
             socket.id = data;
          //   socket.join('roomShipper');
@@ -45,7 +45,7 @@ console.log("co nguoi ket noi", data);
             }, function (err, result) {
                // console.log(result)
             })
-             socket.broadcast.emit("shopYourShipper", { "emailShipper": socket.id, "online": false})
+             socket.broadcast.emit("shopYourShipper", { "emailShipper": socket.id, "isOnline": false})
             console.log(socket.id + " disconnect");
         })
 
