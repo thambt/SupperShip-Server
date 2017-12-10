@@ -139,9 +139,9 @@ module.exports = function (app, passport, io) {
 
     //get Custom bill
     app.get("/custom/getBill/:email", function (req, res) {
-        bill.find({ emailCustomer: req.params.email, status: 0 }, function (err, result) {
+        bill.find({ emailCustomer: req.params.email }, function (err, result) {
             res.json({ "arrBill": result });
-            // console.log(result);
+             console.log(result);
         })
     })
 
@@ -156,7 +156,7 @@ module.exports = function (app, passport, io) {
     // get All Bill:
     app.get("/shipper/getAllBill", function (req, res) {
         bill.find(function (err, result) {
-          //  console.log(result)
+            console.log(result)
             if (err)
                 res.json({ "arrBill": result });
             else
