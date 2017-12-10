@@ -346,6 +346,54 @@ console.log("co nguoi ket noi", data);
 
         })
 
+         // khach chuyen trang thai Bill sang dang 
+        socket.on("customerBillFinish", function (idBill, time, emailCustomer, nameCustomer) {
+            console.log("customerBillFinish", emailShipper)
+            bill.findById(idBill, function (err, data) {
+                if (data != null) {
+                    bill.update({ _id: idBill }, { $set: { "status": 4} }, function (err, result) {
+                        if (result != null) {
+
+                            // console.log("info Bill", data)
+                            var newNoti = {
+                                myEmail: data.emailShipper,
+                                nameActor: nameCustomer,
+                                emailActor: emailCustomer,
+                                content: "Đơn hàng đã chuyển thành công",
+                                idBill: idBill,
+                                isRead: false,
+                                status: 7,
+                                time: time
+                            };
+                            user.findOneAndUpdate({ email: data.emailShipper }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
+                                function (err, data) {
+                                    //console.log("create Noti", data)
+                                })
+                                var newNoti = {
+                                myEmail: data.emailShop,
+                                nameActor: nameCustomer,
+                                emailActor: emailCustomer,
+                                content: "Đơn hàng đã chuyển thành công",
+                                idBill: idBill,
+                                isRead: false,
+                                status: 7,
+                                time: time
+                            };
+                                user.findOneAndUpdate({ email: data.emailShop }, { $push: { listNoti: newNotiShipper } }, { safe: true, upsert: true, new: true },
+                                function (err, data) {
+                                    //console.log("create Noti", data)
+                                })
+                            socket.broadcast.emit("shopNoti", { "shopNoti": data.emailShop })
+                            socket.broadcast.emit("shipperNoti", { "emailShipper": data.emailShipper })
+                        }
+                    })
+                }/* else {
+                    socket.broadcast.emit("shopBillNotFound", { "idBill": idBill, "emailShop": emailShop })
+                }*/
+            })
+
+        })
+
 
         socket.on("cBuy", function (arrProduct, userCustomer, time, methodTransform) {
             // console.log(time)
