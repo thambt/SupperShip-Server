@@ -304,17 +304,50 @@ module.exports = function (app, passport, io) {
     })
     //==================================================================
 
-    // get My Bill Shipping
+    // get Shop's Bill Shipping
     app.get("/shop/getMyBillShipping/:email", function (req, res) {
-        bill.find({ emailShop: req.params.email }, function (err, result) {
+        bill.find({ emailShop: req.params.email, status: 3 }, function (err, result) {
             if (result != null) {                   
-                 myBill = new Array();
-                result.forEach(function (elementBill) {   
-                    if (elementBill.status == 3) {  
-                       myBill.push(elementBill) 
-                    }
-                })
-                 res.json({ "status": true, "arrBill": myBill })
+                 res.json({ "status": true, "arrBill": result })
+            }
+            else { 
+                res.json({ "status": false })
+            }
+        })
+    })
+
+    // get customer's Bill  shipping
+    app.get("/customer/getMyBillShipping/:email", function (req, res) {
+        bill.find({ emailCustomer: req.params.email, status: 3 }, function (err, result) {
+            
+            if (result != null) {    
+                          
+                 res.json({ "status": true, "arrBill": result })
+            }
+            else
+             res.json({ "status": false })
+        })
+    })
+
+     // get customer's Bill find ship
+    app.get("/customer/getMyBillFindShip/:email", function (req, res) {
+        bill.find({ emailCustomer: req.params.email, status: 1 }, function (err, result) {
+            
+            if (result != null) {    
+               // arrBillWaitShip = result            
+                 res.json({ "status": true, "arrBill": result })
+            }
+            else
+             res.json({ "status": false })
+        })
+    })
+
+    // get customer's Bill
+    app.get("/customer/getMyBillWaiting/:email", function (req, res) {
+        bill.find({ emailCustomer: req.params.email, status: 2 }, function (err, result) {
+
+            if (result != null) {                   
+                 res.json({ "status": true, "arrBill": result })
             }
             else { 
                 res.json({ "status": false })
@@ -327,7 +360,7 @@ module.exports = function (app, passport, io) {
         user.findOne({ email: req.params.emailShipper }, function (err, result) {
             if (result != null) {  
                 
-                 res.json({ "status": true, "longitude": result.longitude, "latitude": result.latitude })
+                 res.json({ "status": true, "longitude": result.longitude, "latitude": result.latitude, "online": result.isOnline })
             }
             else { 
                 res.json({ "status": false })
