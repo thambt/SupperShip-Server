@@ -7,21 +7,21 @@ var socketID = new Array();
 var check = 0;
 module.exports = function (io) {
     io.sockets.on('connection', function (socket) {
-        
+
 
         socket.on('email', function (data, kindUser) {
-            user.update({ email:data },
-            {
-                $set: {
-                    isOnline: true
-                }
-            }, function (err, result) {
-               // console.log(result)
-            })
-             socket.broadcast.emit("shopYourShipper", { "emailShipper": data, "isOnline": true})
-console.log("co nguoi ket noi", data);
+            user.update({ email: data },
+                {
+                    $set: {
+                        isOnline: true
+                    }
+                }, function (err, result) {
+                    // console.log(result)
+                })
+            socket.broadcast.emit("shopYourShipper", { "emailShipper": data, "isOnline": true })
+            console.log("co nguoi ket noi", data);
             socket.id = data;
-         //   socket.join('roomShipper');
+            //   socket.join('roomShipper');
             socketID.forEach(function (element) {
                 if (socket.id === element) {
                     check = 1;
@@ -37,26 +37,26 @@ console.log("co nguoi ket noi", data);
         });
 
         socket.on('disconnect', function () {
-            user.update({ email:socket.id },
-            {
-                $set: {
-                    isOnline: false
-                }
-            }, function (err, result) {
-               // console.log(result)
-            })
-             socket.broadcast.emit("shopYourShipper", { "emailShipper": socket.id, "isOnline": false})
+            user.update({ email: socket.id },
+                {
+                    $set: {
+                        isOnline: false
+                    }
+                }, function (err, result) {
+                    // console.log(result)
+                })
+            socket.broadcast.emit("shopYourShipper", { "emailShipper": socket.id, "isOnline": false })
             console.log(socket.id + " disconnect");
         })
 
         // gửi sự kiện cho khách khi shop accept/deny đơn hàng
         socket.on("shopAcceptBill", function (emailShop, nameShop, emailCustomer, code, idBill, time) {
-             console.log(idBill) // { $pull: { results: { score: 8 , item: "B" } } },
+            console.log(idBill) // { $pull: { results: { score: 8 , item: "B" } } },
             user.update({ email: emailShop },
                 { $pull: { listNoti: { idBill: idBill } } },
                 function (err, result) {
 
-                   // console.log(idBill)
+                    // console.log(idBill)
                     if (err != null)
                         console.log(err)
                 })
@@ -105,7 +105,7 @@ console.log("co nguoi ket noi", data);
 
                             bill.remove({ _id: idBill }, function (err, result) {
                                 if (err == null) {
-                                     console.log("acceptBill")
+                                    console.log("acceptBill")
                                     socket.broadcast.emit("customerNoti", { "emailCustomer": emailCustomer })
                                 }
                             })
@@ -123,12 +123,12 @@ console.log("co nguoi ket noi", data);
 
         // gửi broadcast cho shipper khi có bill mới:
         socket.on("haveNewBill", function (emailShop, idBill, time, longitude, latitude) {
-             console.log("haveNewBill",longitude+ latitude)
+            console.log("haveNewBill", longitude + latitude)
             bill.findById(idBill, function (err, data) {
                 if (data != null) {
                     bill.update({ _id: idBill }, { $set: { "status": 1 } }, function (err, result) {
                         if (result != null) {
-                             console.log("haveNewBill",idBill)
+                            console.log("haveNewBill", idBill)
                             socket.broadcast.emit("shipperHaveNewBill", { "emailShop": emailShop, "idBill": idBill, "time": time, "longitude": longitude, "latitude": latitude })
                         }
                     })
@@ -169,7 +169,7 @@ console.log("co nguoi ket noi", data);
                             function (err, result) {
                                 // console.log("create Noti", data)
                             })
-                         console.log("send ", data.emailShop)
+                        console.log("send ", data.emailShop)
                         socket.broadcast.emit("shopNoti", { "emailShop": data.emailShop })
                     }
                     else {
@@ -214,7 +214,7 @@ console.log("co nguoi ket noi", data);
 
         // shop accept shipper
         socket.on("shopAcceptShipper", function (idBill, time, emailShipper, emailShop, nameShop) {
-        //    console.log("shopAcceptShipper", emailShipper)
+            //    console.log("shopAcceptShipper", emailShipper)
             bill.findById(idBill, function (err, data) {
                 if (data != null) {
                     user.findOne({ email: emailShipper }, function (err, userShipper) {
@@ -254,7 +254,7 @@ console.log("co nguoi ket noi", data);
                             })
                             bill.update({ _id: idBill }, { $set: { "status": 2, emailShipper: emailShipper, phoneShipper: userShipper.phone } }, function (err, result) {
                                 if (result != null) {
-                                  //  console.log("info Bill", data)
+                                    //  console.log("info Bill", data)
                                     var newNoti = {
                                         myEmail: data.emailCustomer,
                                         nameActor: nameShop,
@@ -278,7 +278,7 @@ console.log("co nguoi ket noi", data);
                     bill.update({ _id: idBill },
                         { $pull: { "listRegisterShippers": {} } },
                         function (err, result) {
-                           // console.log('delets shipper register', result)
+                            // console.log('delets shipper register', result)
                         })
 
                 } else {
@@ -291,9 +291,9 @@ console.log("co nguoi ket noi", data);
 
         // location shipper change (currentUser.getEmail(), location.getLongitude(),location.getLatitude())
         socket.on("shipperChangLocation", function (emailShipper, longitude, latitude) {
-           console.log("shipperChangLocation", emailShipper)
+            console.log("shipperChangLocation", emailShipper)
             user.update({ email: emailShipper }, { $set: { "longitude": longitude, "latitude": latitude } }, function (err, result) {
-               // console.log("shipper location chảng", result)
+                // console.log("shipper location chảng", result)
                 socket.broadcast.emit("shopShipperLocation", { "emailShipper": emailShipper, "longitude": longitude, "latitude": latitude })
             })
 
@@ -304,7 +304,7 @@ console.log("co nguoi ket noi", data);
             console.log("shopBillShipping", emailShipper)
             bill.findById(idBill, function (err, data) {
                 if (data != null) {
-                    bill.update({ _id: idBill }, { $set: { "status": 3} }, function (err, result) {
+                    bill.update({ _id: idBill }, { $set: { "status": 3 } }, function (err, result) {
                         if (result != null) {
 
                             // console.log("info Bill", data)
@@ -321,10 +321,10 @@ console.log("co nguoi ket noi", data);
                             user.findOneAndUpdate({ email: data.emailCustomer }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
                                 function (err, result) {
                                     socket.broadcast.emit("customerNoti", { "emailCustomer": data.emailCustomer })
-                            
+
                                     //console.log("create Noti", data)
                                 })
-                                var newNotiShipper = {
+                            var newNotiShipper = {
                                 myEmail: data.emailShipper,
                                 nameActor: nameShop,
                                 emailActor: data.emailShop,
@@ -334,13 +334,13 @@ console.log("co nguoi ket noi", data);
                                 status: 6,
                                 time: time
                             };
-                                user.findOneAndUpdate({ email: data.emailShipper }, { $push: { listNoti: newNotiShipper } }, { safe: true, upsert: true, new: true },
+                            user.findOneAndUpdate({ email: data.emailShipper }, { $push: { listNoti: newNotiShipper } }, { safe: true, upsert: true, new: true },
                                 function (err, result) {
                                     console.log("shipping", data.emailShipper)
                                     socket.broadcast.emit("shipperNoti", { "myEmail": data.emailShipper })
                                     //console.log("create Noti", data)
                                 })
-                                
+
                         }
                     })
                 } else {
@@ -350,12 +350,12 @@ console.log("co nguoi ket noi", data);
 
         })
 
-         // khach chuyen trang thai Bill sang dang 
+        // khach chuyen trang thai Bill sang dang 
         socket.on("customerBillFinish", function (idBill, time, emailCustomer, nameCustomer) {
             console.log("customerBillFinish", idBill)
             bill.findById(idBill, function (err, data) {
                 if (data != null) {
-                    bill.update({ _id: idBill }, { $set: { "status": 5} }, function (err, result) {
+                    bill.update({ _id: idBill }, { $set: { "status": 5 } }, function (err, result) {
                         if (result != null) {
 
                             // console.log("info Bill", data)
@@ -371,9 +371,10 @@ console.log("co nguoi ket noi", data);
                             };
                             user.findOneAndUpdate({ email: data.emailShipper }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
                                 function (err, data) {
-                                    //console.log("create Noti", data)
+                                    console.log("finissh", data.email)
+                                    socket.broadcast.emit("shipperNoti", { "myEmail": data.email })
                                 })
-                                var newNoti = {
+                            var newNoti = {
                                 myEmail: data.emailShop,
                                 nameActor: nameCustomer,
                                 emailActor: emailCustomer,
@@ -383,12 +384,12 @@ console.log("co nguoi ket noi", data);
                                 status: 7,
                                 time: time
                             };
-                                user.findOneAndUpdate({ email: data.emailShop }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
+                            user.findOneAndUpdate({ email: data.emailShop }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
                                 function (err, data) {
-                                    //console.log("create Noti", data)
+                                     socket.broadcast.emit("shopNoti", { "myEmail": data.email })
                                 })
-                            socket.broadcast.emit("shopNoti", { "shopNoti": data.emailShop })
-                            socket.broadcast.emit("shipperNoti", { "emailShipper": data.emailShipper })
+                           
+                            
                         }
                     })
                 }/* else {
@@ -418,9 +419,10 @@ console.log("co nguoi ket noi", data);
                             listProducts: element.listProduct,
                             moneyItem: 300000,
                             moneyShip: 20000,
-                            time: '',
+                           /* timeCreate: element.timeCreate,
+                            timeShip: element.timeShip,*/
                             note: "String",
-                            methodTransform: methodTransform
+                            methodTransform: element.methodTransform
                         }
                         bill.create(newBill, function (err, result) {
                             if (err == null) {

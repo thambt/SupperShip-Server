@@ -237,8 +237,10 @@ module.exports = function (app, passport, io) {
 
     // cập nhật trang tahis Bill gần tới
     app.get("/customer/billNearCustomer/:id", function (req, res) {
-        bill.findOneAndUpdate({ _id: req.params.id }, { $push: { status: 4 } }, { safe: true, upsert: true, new: true },
+        console.log("neame", req.params.id)
+        bill.findOneAndUpdate({ _id: req.params.id }, { $set: { status: 4 } }, { safe: true, upsert: true, new: true },
             function (err, data) {
+                 console.log("neame", err)
                 if (err == null) {
                     res.json({ "status": true })
                 }
