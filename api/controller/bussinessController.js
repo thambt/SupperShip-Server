@@ -156,7 +156,7 @@ module.exports = function (app, passport, io) {
 
     // get All Bill:
     app.get("/shipper/getAllBill", function (req, res) {
-        bill.find(function (err, result) {
+        bill.find({status: 3},function (err, result) {
             //console.log(result)
             if (err)
                 res.json({ "arrBill": result });
