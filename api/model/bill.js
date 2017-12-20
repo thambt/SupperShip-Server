@@ -1,10 +1,10 @@
-var mongoose=require("mongoose");
+var mongoose = require("mongoose");
 var itemProduct = require("./itemProduct")
 var infoShipper = require("./infoShipper")
 
 var schema = mongoose.Schema;
-var frameBill= new schema({
-    emailShop:String,
+var frameBill = new schema({
+    emailShop: String,
     emailCustomer: String,
     emailShipper: { type: String, default: '' },
     phoneShop: String,
@@ -13,7 +13,7 @@ var frameBill= new schema({
     addressShop: String,
     addressCustomer: String,
     weight: String,
-    listProducts : [itemProduct],
+    listProducts: [itemProduct],
     methodTransform: Number,
     moneyItem: String,
     moneyShip: String,
@@ -21,8 +21,11 @@ var frameBill= new schema({
     note: String,
     status: Number,
 
+    timeCreate: String,
+    timeShipping: String,
+    timePlanShip: String,
     listRegisterShippers: [infoShipper],
 });
-var bill=mongoose.model("bills",frameBill);
+var bill = mongoose.model("bills", frameBill);
 
-module.exports=bill;
+module.exports = bill;
