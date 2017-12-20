@@ -156,7 +156,7 @@ module.exports = function (app, passport, io) {
 
     // get All Bill:
     app.get("/shipper/getAllBill", function (req, res) {
-        bill.find({status: 2},function (err, result) {
+        bill.find({status: 1},function (err, result) {
             //console.log(result)
             if (err)
                 res.json({ "arrBill": result });
@@ -249,6 +249,21 @@ module.exports = function (app, passport, io) {
                     res.json({ "status": false })
                 }
               //  console.log("create Noti")
+            })
+    })
+
+    // shipper get my bill
+    app.get("/shipper/getMyBill/:emailShipper", function (req, res) {
+       // console.log("neame", req.params.id)
+        bill.find({ status: 2, emailShipper: req.params.emailShipper },
+            function (err, result) {
+                if (result != null) {
+                res.json({ "status": true, "arrBill": result })
+                console.log("get getMyBillShipping", result)
+            }
+            else {
+                res.json({ "status": false })
+            }
             })
     })
 

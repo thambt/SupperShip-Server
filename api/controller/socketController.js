@@ -144,7 +144,7 @@ module.exports = function (io) {
              console.log("shipper register",idBill)
             bill.findById(idBill, function (err, data) {
                 if (data != null) {
-                    if (data.status == 2) {
+                    if (data.status == 1) {
                         var newNoti = {
                             myEmail: data.emailShop,
                             nameActor: nameShipper,
