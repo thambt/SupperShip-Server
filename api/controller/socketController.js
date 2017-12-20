@@ -141,10 +141,10 @@ module.exports = function (io) {
 
         // Shipper đắng ký nhận đơn hành của shop:
         socket.on("shipperRegister", function (idBill, emailShipper, nameShipper, image, phoneShipper, time) {
-            //  console.log(idBill)
+             console.log("shipper register",idBill)
             bill.findById(idBill, function (err, data) {
                 if (data != null) {
-                    if (data.status == 1) {
+                    if (data.status == 2) {
                         var newNoti = {
                             myEmail: data.emailShop,
                             nameActor: nameShipper,
@@ -401,9 +401,9 @@ module.exports = function (io) {
 
 
         socket.on("cBuy", function (arrProduct, userCustomer, time, methodTransform) {
-            // console.log(time)
+            // console.log("cBuy",arrProduct)
             Array.from(arrProduct).forEach(function (element) {
-               // console.log("cbuy", element.listProduct)
+                console.log("cbuy", element.listProduct)
                 user.findOne({ email: element.email }, function (err, result) {
                     // console.log("find a user", result)
                     if (err == null) {
