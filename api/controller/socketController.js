@@ -123,7 +123,7 @@ module.exports = function (io) {
 
         // gửi broadcast cho shipper khi có bill mới:
         socket.on("haveNewBill", function (emailShop, idBill, time, longitude, latitude) {
-           // console.log("haveNewBill", longitude + latitude)
+            console.log("haveNewBill", longitude + latitude)
             bill.findById(idBill, function (err, data) {
                 if (data != null) {
                     bill.update({ _id: idBill }, { $set: { "status": 1 } }, function (err, result) {
@@ -403,7 +403,7 @@ module.exports = function (io) {
         socket.on("cBuy", function (arrProduct, userCustomer, time, methodTransform) {
             // console.log("cBuy",arrProduct)
             Array.from(arrProduct).forEach(function (element) {
-                console.log("cbuy", element.listProduct)
+                console.log("cbuy", element)
                 user.findOne({ email: element.email }, function (err, result) {
                     // console.log("find a user", result)
                     if (err == null) {
@@ -419,8 +419,9 @@ module.exports = function (io) {
                             listProducts: element.listProduct,
                             moneyItem: 300000,
                             moneyShip: 20000,
-                           /* timeCreate: element.timeCreate,
-                            timeShip: element.timeShip,*/
+                            timeCreate: element.timeCreate,
+                            timeShipping: element.timeShipping,
+                            timePlanShip: element.timePlanShip,
                             note: "String",
                             methodTransform: element.methodTransform
                         }
