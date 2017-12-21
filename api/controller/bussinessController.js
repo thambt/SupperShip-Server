@@ -131,7 +131,7 @@ module.exports = function (app, passport, io) {
 
     // get Shop Bill: 
     app.get("/user/getBill/:email", function (req, res) {
-        bill.find({ emailShop: req.params.email }, function (err, result) {
+        bill.find({ emailShop: req.params.email , status: {$0,$1,$2,$3,$4,$5}}, function (err, result) {
             res.json({ "arrBill": result });
             // console.log(result);
         })
