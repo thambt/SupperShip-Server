@@ -139,7 +139,7 @@ module.exports = function (app, passport, io) {
 
     //get Custom bill
     app.get("/custom/getBill/:email", function (req, res) {
-        bill.find({ emailCustomer: req.params.email }, function (err, result) {
+        bill.find({ emailCustomer: req.params.email, status: {$gte: 0} }, function (err, result) {
             res.json({ "arrBill": result });
             //console.log(result);
         })
