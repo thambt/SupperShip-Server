@@ -405,7 +405,7 @@ module.exports = function (io) {
             Array.from(arrProduct).forEach(function (element) {
                 console.log("cbuy", element)
                 user.findOne({ email: element.email }, function (err, result) {
-                    // console.log("find a user", result)
+                     console.log("find a user", element)
                     if (err == null) {
                         var newBill = {
                             emailShop: element.email,
@@ -423,7 +423,8 @@ module.exports = function (io) {
                             timeShipping: element.timeShipping,
                             timePlanShip: element.timePlanShip,
                             note: "String",
-                            methodTransform: element.methodTransform
+                            methodTransform: element.methodTransform,
+                            distance: element.distance
                         }
                         bill.create(newBill, function (err, result) {
                             if (err == null) {

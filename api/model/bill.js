@@ -24,6 +24,7 @@ var frameBill = new schema({
     timeCreate: String,
     timeShipping: String,
     timePlanShip: String,
+    distance: String,
     listRegisterShippers: [infoShipper],
 });
 var bill = mongoose.model("bills", frameBill);
