@@ -3,6 +3,7 @@ const LocalStrategy = require('passport-local').Strategy
 var logout = require('express-passport-logout');
 var product = require("../model/product");
 var userShipper = require("../model/userShipper")
+var bill = require("../model/bill")
 
 function getuser(res) {
     user.find(function (err, users) {
@@ -51,6 +52,7 @@ module.exports = function (app, passport) {
     // create a new user
     app.post("/user/register", function (req, res) {
         user.findOne({ email: req.body.email }, function (err, result) {
+
             if (result == null) {
                 user.create(req.body, function (err, result) {
                     if (!err)
@@ -90,8 +92,33 @@ module.exports = function (app, passport) {
                     "licen": req.body.licen
                 }
             }, function (err, result) {
-                if (err == null)
+                if (err == null) {
+                    bill.update({ emailShop: req.body.email },
+                        {
+                            $set: {
+                                "phoneShop": req.body.phone,
+                                "addressShop": req.body.address
+                            }
+                        },
+                        {multi: true}
+                        , function (err, result) {
+
+                        })
+
+                        product.update({ emailShop: req.body.email },
+                        {
+                            $set: {
+                                "phoneShop": req.body.phone,
+                                "addressShop": req.body.address
+                            }
+                        },
+                        {multi: true}
+                        , function (err, result) {
+
+                        })
                     res.json({ "status": true })
+
+                }
             })
     })
 

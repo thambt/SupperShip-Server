@@ -123,7 +123,7 @@ module.exports = function (io) {
 
         // gửi broadcast cho shipper khi có bill mới:
         socket.on("haveNewBill", function (emailShop, idBill, time, longitude, latitude) {
-            console.log("haveNewBill", longitude + latitude)
+            console.log("haveNewBill", longitude + " "+ latitude+ " "+ emailShop+ " "+ idBill+ " "+ time)
             bill.findById(idBill, function (err, data) {
                 if (data != null) {
                     bill.update({ _id: idBill }, { $set: { "status": 1 } }, function (err, result) {
@@ -219,6 +219,7 @@ module.exports = function (io) {
                 if (data != null) {
                     user.findOne({ email: emailShipper }, function (err, userShipper) {
                         if (err == null) {
+                             socket.broadcast.emit("customerNoti", { "emailCustomer": data.emailCustomer })
 
                             var newNoti = {
                                 myEmail: emailShipper,
@@ -232,10 +233,15 @@ module.exports = function (io) {
                             };
                             user.findOneAndUpdate({ email: emailShipper }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
                                 function (err, data) {
+                                    socket.broadcast.emit("shipperShopAcceptYou", { "idBill": idBill, "status": 1, "emailShop": emailShop, "emailShipper": emailShipper })
                                     //console.log("create Noti", data)
                                 })
+                              //  if()
                             data.listRegisterShippers.forEach(function (elementShipper) {
-                                if (elementShipper.emailShipper != emailShipper) {
+                                if (elementShipper.email != emailShipper) {
+                                console.log("check Shipper register",elementShipper.email +" "+ emailShipper)
+                                }
+                                if (elementShipper.email != emailShipper) {
                                     var newNoti = {
                                         myEmail: elementShipper.emailShipper,
                                         nameActor: nameShop,
@@ -269,9 +275,7 @@ module.exports = function (io) {
                                         function (err, data) {
                                             //console.log("create Noti", data)
                                         })
-                                    socket.broadcast.emit("customerNoti", { "emailCustomer": data.emailCustomer })
-                                    socket.broadcast.emit("shipperShopAcceptYou", { "idBill": idBill, "status": 1, "emailShop": emailShop, "emailShipper": emailShipper })
-                                }
+                                      }
                             })
                         }
                     })
@@ -403,7 +407,7 @@ module.exports = function (io) {
         socket.on("cBuy", function (arrProduct, userCustomer, time, methodTransform) {
             // console.log("cBuy",arrProduct)
             Array.from(arrProduct).forEach(function (element) {
-                console.log("cbuy", element)
+                console.log("cbuy", element.distance)
                 user.findOne({ email: element.email }, function (err, result) {
                      console.log("find a user", element)
                     if (err == null) {
