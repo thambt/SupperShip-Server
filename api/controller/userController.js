@@ -99,7 +99,7 @@ module.exports = function (app, passport) {
                                 "phoneShop": req.body.phone,
                                 "addressShop": req.body.address
                             }
-                        },
+                        }, 
                         {multi: true}
                         , function (err, result) {
 
