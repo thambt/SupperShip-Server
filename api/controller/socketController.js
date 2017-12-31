@@ -373,10 +373,11 @@ module.exports = function (io) {
                                 status: 7,
                                 time: time
                             };
+                             socket.broadcast.emit("shipperNoti", { "myEmail": data.emailShipper })
                             user.findOneAndUpdate({ email: data.emailShipper }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
                                 function (err, data) {
                                     console.log("finissh", data.email)
-                                    socket.broadcast.emit("shipperNoti", { "myEmail": data.email })
+                                   
                                 })
                             var newNoti = {
                                 myEmail: data.emailShop,
@@ -388,9 +389,10 @@ module.exports = function (io) {
                                 status: 7,
                                 time: time
                             };
+                             socket.broadcast.emit("shopNoti", { "myEmail": data.emailShop })
                             user.findOneAndUpdate({ email: data.emailShop }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
                                 function (err, data) {
-                                     socket.broadcast.emit("shopNoti", { "myEmail": data.email })
+                                    
                                 })
                            
                             
