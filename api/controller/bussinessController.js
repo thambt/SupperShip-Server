@@ -109,7 +109,6 @@ var listProduct = new Array();
     //get product by idBill
     app.get("/bussiness/getListProductByBill/:idBill", function (req, res) {
         bill.findById(req.params.idBill,function(err, result){
-            //console.log(result)
             if(result != null){
                  Array.from(result.listProducts).forEach(function (element) {
                    listProduct.push(element.idProduct)
