@@ -435,8 +435,7 @@ module.exports = function (io) {
                         }
                         bill.create(newBill, function (err, result) {
                             if (err == null) {
-                                //console.log("find product","goto")
-                                // trừ số lượng sản phầm còn trong kho hàng cua shop
+                            
                                 element.listProduct.forEach(function (elementITem) {
                                     // console.log("find product",elementITem)
                                     product.findById(elementITem.idProduct, function (err, result) {
