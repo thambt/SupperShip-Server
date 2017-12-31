@@ -1,11 +1,12 @@
 var user = require("../model/user");
 var bill = require("../model/bill")
 var product = require("../model/product")
+ 
 
 module.exports = function (app, passport, io) {
 
 
-
+var listProduct = new Array();
     //================ Product ========================================
     // create Product:
     app.post("/shop/createProduct", function (req, res) {
@@ -104,6 +105,32 @@ module.exports = function (app, passport, io) {
             res.json({ "arrProduct": result });
         })
     })
+
+    //get product by idBill
+    app.get("/bussiness/getListProductByBill/:idBill", function (req, res) {
+        bill.findById(req.params.idBill,function(err, result){
+            //console.log(result)
+            if(result != null){
+                 Array.from(result.listProducts).forEach(function (element) {
+                   listProduct.push(element.idProduct)
+                 })
+                 if(listProduct.length > 0){
+                     product.find({_id: { $in: listProduct }}, function(err, result){
+                         if(result != null)
+                         res.json({"status": true, "arrProduct": result });
+                         else
+                         res.json({ "status": false })
+                     })
+                 }
+                 res.json({ "status": false })
+                 
+            } else{
+                 res.json({ "status": false })
+            }
+        })
+    })
+
+    /**/
 
 
     // Delete Product:

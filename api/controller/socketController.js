@@ -425,12 +425,13 @@ module.exports = function (io) {
                             listProducts: element.listProduct,
                             moneyItem: element.moneyItem,
                             moneyShip: element.moneyShip, 
-                            timeCreate: element.timeCreate,
+                            timeCreate: element.timeCreate, 
                             timeShipping: element.timeShipping,
                             timePlanShip: element.timePlanShip,
-                            note: "String",
+                            note: element.note,
                             methodTransform: element.methodTransform,
-                            distance: element.distance
+                            distance: element.distance,
+                            weight: element.weight
                         }
                         bill.create(newBill, function (err, result) {
                             if (err == null) {
