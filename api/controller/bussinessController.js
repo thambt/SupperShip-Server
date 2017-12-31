@@ -109,6 +109,7 @@ var listProduct = new Array();
     //get product by idBill
     app.get("/bussiness/getListProductByBill/:idBill", function (req, res) {
         bill.findById(req.params.idBill,function(err, result){
+            //console.log(result)
             if(result != null){
                  Array.from(result.listProducts).forEach(function (element) {
                    listProduct.push(element.idProduct)
@@ -117,12 +118,8 @@ var listProduct = new Array();
                      product.find({_id: { $in: listProduct }}, function(err, result){
                          if(result != null)
                          res.json({"status": true, "arrProduct": result });
-                         else
-                         res.json({ "status": false })
                      })
                  }
-                 res.json({ "status": false })
-                 
             } else{
                  res.json({ "status": false })
             }
