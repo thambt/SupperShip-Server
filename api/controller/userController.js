@@ -79,6 +79,18 @@ module.exports = function (app, passport) {
         })
     });
 
+    // getShipper by email
+    app.get("/customer/getShipperByEmail/:email", function (req, res) {
+      //  console.log("aaaaaaaaceferb")
+        user.findOne({ email: req.params.email }, function (err, result) {
+            if (result != null)
+               res.json({ "status": true, "user": result })
+            else {
+                res.json({ "status": false })
+            }
+        })
+    });
+
     // update user
     app.post("/user/updateUser", function (req, res) {
         user.update({ email: req.body.email },

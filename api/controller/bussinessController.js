@@ -263,7 +263,7 @@ var listProduct = new Array();
 
     // cập nhật trang tahis Bill gần tới
     app.get("/customer/billNearCustomer/:id", function (req, res) {
-       // console.log("neame", req.params.id)
+        console.log("neame", req.params.id)
         bill.findOneAndUpdate({ _id: req.params.id }, { $set: { status: 4 } }, { safe: true, upsert: true, new: true },
             function (err, data) {
                 // console.log("neame", err)
@@ -285,6 +285,21 @@ var listProduct = new Array();
                 if (result != null) {
                 res.json({ "status": true, "arrBill": result })
                 console.log("get getMyBillShipping", result)
+            }
+            else {
+                res.json({ "status": false })
+            }
+            })
+    })
+
+    // shop get my bill wait to ship
+    app.get("/shop/getBillWait/:emailShop", function (req, res) {
+       // console.log("neame", req.params.id)
+        bill.find({ status: 2, emailShop: req.params.emailShop },
+            function (err, result) {
+                if (result != null) {
+                res.json({ "status": true, "arrBill": result })
+              //  console.log("get getMyBillShipping", result)
             }
             else {
                 res.json({ "status": false })
@@ -376,10 +391,8 @@ var listProduct = new Array();
 
     // get customer's Bill  shipping
     app.get("/customer/getMyBillShipping/:email", function (req, res) {
-        bill.find({ emailCustomer: req.params.email, status: 3 }, function (err, result) {
-
+        bill.find({ emailCustomer: req.params.email, status: { $in : [3,4]}}, function (err, result) {
             if (result != null) {
-
                 res.json({ "status": true, "arrBill": result })
             }
             else
@@ -416,6 +429,7 @@ var listProduct = new Array();
     // get My shipper locationlocation
     app.get("/shop/getMyShipper/:emailShipper", function (req, res) {
         user.findOne({ email: req.params.emailShipper }, function (err, result) {
+            console.log(result)
             if (result != null) {
 
                 res.json({ "status": true, "longitude": result.longitude, "latitude": result.latitude, "online": result.isOnline })
