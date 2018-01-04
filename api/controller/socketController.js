@@ -129,7 +129,7 @@ module.exports = function (io) {
                     bill.update({ _id: idBill }, { $set: { "status": 1 } }, function (err, result) {
                         if (result != null) {
                             console.log("haveNewBill", data)
-                            socket.broadcast.emit("shipperHaveNewBill", { "emailShop": emailShop, "idBill": idBill, "time": time, "longitude": longitude, "latitude": latitude, "addressCustomer": data.addressCustomer, "addressShop": data.addressShop })
+                            socket.broadcast.emit("shipperHaveNewBill", { "emailShop": emailShop, "idBill": idBill, "time": time, "longitude": longitude, "latitude": latitude })
                         }
                     })
                 }
