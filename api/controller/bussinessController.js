@@ -378,7 +378,7 @@ var listProduct = new Array();
 
     // get Shop's Bill Shipping
     app.get("/shop/getMyBillShipping/:email", function (req, res) {
-        bill.find({ emailShop: req.params.email, status: 3 }, function (err, result) {
+        bill.find({ emailShop: req.params.email, status: { $in : [3,4]} }, function (err, result) {
             if (result != null) {
                 res.json({ "status": true, "arrBill": result })
                 console.log("get getMyBillShipping", result)
