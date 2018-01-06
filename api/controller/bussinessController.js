@@ -5,11 +5,10 @@ var product = require("../model/product")
 
 module.exports = function (app, passport, io) {
 
-
-var listProduct = new Array();
     //================ Product ========================================
     // create Product:
-    app.post("/shop/createProduct", function (req, res) {
+        // console.log(req.body)
+        app.post("/shop/createProduct", function (req, res) {
         // console.log(req.body)
         product.create(req.body, function (err, result) {
             if (err == null)
@@ -109,8 +108,9 @@ var listProduct = new Array();
     //get product by idBill
     app.get("/bussiness/getListProductByBill/:idBill", function (req, res) {
         bill.findById(req.params.idBill,function(err, result){
-            //console.log(result)
+            console.log(result)
             if(result != null){
+                var listProduct = new Array();
                  Array.from(result.listProducts).forEach(function (element) {
                    listProduct.push(element.idProduct)
                  })
