@@ -2,13 +2,17 @@ var user = require("../model/user");
 var bill = require("../model/bill")
 var product = require("../model/product")
  
-
+function isLoggedIn(req, res, next) {
+    if (req.isAuthenticated())
+        return next();
+    res.end('Not logged in');
+}
 module.exports = function (app, passport, io) {
 
     //================ Product ========================================
     // create Product:
         // console.log(req.body)
-        app.post("/shop/createProduct", function (req, res) {
+        app.post("/shop/createProduct",isLoggedIn, function (req, res) {
         // console.log(req.body)
         product.create(req.body, function (err, result) {
             if (err == null)
@@ -20,8 +24,9 @@ module.exports = function (app, passport, io) {
     })
 
     // get My product: 
-    app.get("/shop/getProduct/:email", function (req, res) {
+    app.get("/shop/getProduct/:email",isLoggedIn, function (req, res) {
         product.find({ emailShop: req.params.email }, function (err, result) {
+            console.log(err)
             if (err == null)
                 res.json({ "arrProduct": result });
             else
@@ -50,7 +55,7 @@ module.exports = function (app, passport, io) {
     })
 
     // Update quantity product: 
-    app.post("/shop/updateNumPro", function (req, res) {
+    app.post("/shop/updateNumPro", isLoggedIn,function (req, res) {
         product.update({ _id: req.body._id },
             {
                 $set: {
@@ -66,7 +71,7 @@ module.exports = function (app, passport, io) {
 
 
     // Update Product : 
-    app.post("/shop/updateProduct", function (req, res) {
+    app.post("/shop/updateProduct",isLoggedIn, function (req, res) {
         //console.log()
         product.update({ _id: req.body._id },
             {
@@ -106,7 +111,7 @@ module.exports = function (app, passport, io) {
     })
 
     //get product by idBill
-    app.get("/bussiness/getListProductByBill/:idBill", function (req, res) {
+    app.get("/bussiness/getListProductByBill/:idBill",isLoggedIn, function (req, res) {
         bill.findById(req.params.idBill,function(err, result){
             console.log(result)
             if(result != null){
@@ -130,7 +135,7 @@ module.exports = function (app, passport, io) {
 
 
     // Delete Product:
-    app.get("/shop/deleteProduct/:id", function (req, res) {
+    app.get("/shop/deleteProduct/:id",isLoggedIn, function (req, res) {
         product.remove({ _id: req.params.id }, function (err, result) {
             if (err == null) {
                 res.json({ "status": true })
@@ -153,7 +158,7 @@ module.exports = function (app, passport, io) {
     })
 
     // get Shop Bill: 
-    app.get("/user/getBill/:email", function (req, res) {
+    app.get("/user/getBill/:email",isLoggedIn, function (req, res) {
         console.log(req)
         bill.find({ emailShop: req.params.email , status: {$gte: 0}}, function (err, result) {
             res.json({ "arrBill": result });
@@ -162,7 +167,7 @@ module.exports = function (app, passport, io) {
     })
 
     //get Custom bill
-    app.get("/custom/getBill/:email", function (req, res) {
+    app.get("/custom/getBill/:email",isLoggedIn, function (req, res) {
         bill.find({ emailCustomer: req.params.email, status: {$gte: 0} }, function (err, result) {
             res.json({ "arrBill": result });
             //console.log(result);
@@ -170,7 +175,7 @@ module.exports = function (app, passport, io) {
     })
 
     //get Bill by Id: 
-    app.get("/user/getBillById/:id", function (req, res) {
+    app.get("/user/getBillById/:id",isLoggedIn, function (req, res) {
         bill.findById(req.params.id, function (err, result) {
             res.json({ "Bill": result });
           
@@ -179,7 +184,7 @@ module.exports = function (app, passport, io) {
     })
 
     // get All Bill:
-    app.get("/shipper/getAllBill", function (req, res) {
+    app.get("/shipper/getAllBill",isLoggedIn, function (req, res) {
         bill.find({status: 1},function (err, result) {
             //console.log(result)
             if (err)
@@ -190,7 +195,7 @@ module.exports = function (app, passport, io) {
     })
 
     // get Shipper Register my bill:
-    app.get("/shipper/getshipperRegister/:id/:myEmail", function (req, res) {
+    app.get("/shipper/getshipperRegister/:id/:myEmail",isLoggedIn, function (req, res) {
         bill.findById(req.params.id, function (err, result) {
             // console.log(result)
             if (result != null) {
@@ -204,7 +209,7 @@ module.exports = function (app, passport, io) {
 
 
     // Update Bill : 
-    app.post("/shop/updateBill", function (req, res) {
+    app.post("/shop/updateBill", isLoggedIn,function (req, res) {
         bill.update({ _id: req.body.id },
             {
                 $set: {
@@ -231,7 +236,7 @@ module.exports = function (app, passport, io) {
 
 
     //============= get temp bill for shop============
-    app.get("/shop/getBillTemp/:email", function (req, res) {
+    app.get("/shop/getBillTemp/:email",isLoggedIn, function (req, res) {
         
         bill.find({ emailShop: { $regex: "^" + req.params.email } }, { status: 0 }, function (err, result) {
             res.json({ "arrBill": result });
@@ -240,7 +245,7 @@ module.exports = function (app, passport, io) {
     //================================================
 
     //============= get bill available for shipper============
-    app.get("/shipper/getBillAvai", function (req, res) {
+    app.get("/shipper/getBillAvai",isLoggedIn, function (req, res) {
         bill.find({ status: 1 }, function (err, result) {
             res.json({ "arrBill": result });
             //   console.log(err)
@@ -248,7 +253,7 @@ module.exports = function (app, passport, io) {
     })
 
     // Delete Bill:
-    app.get("/shop/deleteBill/:id", function (req, res) {
+    app.get("/shop/deleteBill/:id",isLoggedIn, function (req, res) {
         bill.remove({ _id: req.params.id }, function (err, result) {
             // console.log(err)
             if (err == null) {
@@ -262,7 +267,7 @@ module.exports = function (app, passport, io) {
     })
 
     // cập nhật trang tahis Bill gần tới
-    app.get("/customer/billNearCustomer/:id", function (req, res) {
+    app.get("/customer/billNearCustomer/:id", isLoggedIn,function (req, res) {
         console.log("neame", req.params.id)
         bill.findOneAndUpdate({ _id: req.params.id }, { $set: { status: 4 } }, { safe: true, upsert: true, new: true },
             function (err, data) {
@@ -278,7 +283,7 @@ module.exports = function (app, passport, io) {
     })
 
     // shipper get my bill
-    app.get("/shipper/getMyBill/:emailShipper", function (req, res) {
+    app.get("/shipper/getMyBill/:emailShipper",isLoggedIn, function (req, res) {
        // console.log("neame", req.params.id)
         bill.find({ status: 2, emailShipper: req.params.emailShipper },
             function (err, result) {
@@ -293,7 +298,7 @@ module.exports = function (app, passport, io) {
     })
 
     // shop get my bill wait to ship
-    app.get("/shop/getBillWait/:emailShop", function (req, res) {
+    app.get("/shop/getBillWait/:emailShop",isLoggedIn, function (req, res) {
        // console.log("neame", req.params.id)
         bill.find({ status: 2, emailShop: req.params.emailShop },
             function (err, result) {
@@ -312,7 +317,7 @@ module.exports = function (app, passport, io) {
     //============================Noti==================================
 
     // get My Noti: 
-    app.get("/user/getNoti/:email", function (req, res) {
+    /*app.get("/user/getNoti/:email",isLoggedIn, function (req, res) {
         var myNoti = new Array();
         user.findOne({ email: req.params.email }, function (err, result) {
             if (result != null) {
@@ -324,7 +329,7 @@ module.exports = function (app, passport, io) {
             res.json({ "listNoti": myNoti })
             // console.log(myNoti)
         })
-    })
+    })*/
 
     //================================================
 
@@ -377,7 +382,7 @@ module.exports = function (app, passport, io) {
     //==================================================================
 
     // get Shop's Bill Shipping
-    app.get("/shop/getMyBillShipping/:email", function (req, res) {
+    app.get("/shop/getMyBillShipping/:email",isLoggedIn, function (req, res) {
         bill.find({ emailShop: req.params.email, status: { $in : [3,4]} }, function (err, result) {
             if (result != null) {
                 res.json({ "status": true, "arrBill": result })
@@ -390,7 +395,7 @@ module.exports = function (app, passport, io) {
     })
 
     // get customer's Bill  shipping
-    app.get("/customer/getMyBillShipping/:email", function (req, res) {
+    app.get("/customer/getMyBillShipping/:email",isLoggedIn, function (req, res) {
         bill.find({ emailCustomer: req.params.email, status: { $in : [3,4]}}, function (err, result) {
             if (result != null) {
                 res.json({ "status": true, "arrBill": result })
@@ -401,7 +406,7 @@ module.exports = function (app, passport, io) {
     })
 
     // get customer's Bill find ship
-    app.get("/customer/getMyBillFindShip/:email", function (req, res) {
+    app.get("/customer/getMyBillFindShip/:email",isLoggedIn, function (req, res) {
         bill.find({ emailCustomer: req.params.email, status: 1 }, function (err, result) {
 
             if (result != null) {
@@ -414,7 +419,7 @@ module.exports = function (app, passport, io) {
     })
 
     // get customer's Bill
-    app.get("/customer/getMyBillWaiting/:email", function (req, res) {
+    app.get("/customer/getMyBillWaiting/:email",isLoggedIn, function (req, res) {
         bill.find({ emailCustomer: req.params.email, status: 2 }, function (err, result) {
 
             if (result != null) {
@@ -441,7 +446,7 @@ module.exports = function (app, passport, io) {
     })
 
     //get Shipper Near 
-    app.get("/shop/getShipperNearMe", function (req, res) {
+    app.get("/shop/getShipperNearMe",isLoggedIn, function (req, res) {
         // console.log("ooooo")
         user.find({ isOnline: true, kindUser: 2 }, function (err, result) {
           //  console.log(result)

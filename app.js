@@ -1,3 +1,6 @@
+require('dotenv').load();
+
+
 var express = require("express");
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
@@ -10,6 +13,9 @@ var userControllers = require("./api/controller/userController");
 var bussinessController = require("./api/controller/bussinessController");
 var socketController= require("./api/controller/socketController")
 const config = require('./api/config/database');
+var  flash = require('connect-flash');
+var  cookieParser = require('cookie-parser');
+var  morgan = require('morgan');
 
 
 var app = express();
@@ -19,18 +25,16 @@ var http = require('http').createServer(app);
 var io = require('socket.io').listen(http);
 
 app.use(express.static(__dirname + "/"));
+app.use(morgan('dev'));
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-app.use(session({ secret: "mysecret" }))
-app.use(passport.initialize())
-app.use(passport.session())
-
+app.use(session({ secret: 'mysecret' }));
 app.use(passport.initialize());
 app.use(passport.session());
-
-var Users = require('./api/model/user')
+app.use(flash());
 
 
 app.set("view engine", "ejs");
@@ -42,6 +46,8 @@ mongoose.connect(config.database);
 userControllers(app, passport);
 bussinessController(app,passport, io);
 socketController(io);
+require('./api/config/passport')(passport);
+require('./routes')(app, passport);
 
 http.listen(port, function () {
     console.log("Server is connecting in port: " + port);

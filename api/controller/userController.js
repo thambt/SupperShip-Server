@@ -4,6 +4,9 @@ var logout = require('express-passport-logout');
 var product = require("../model/product");
 var userShipper = require("../model/userShipper")
 var bill = require("../model/bill")
+var passport = require('passport');
+
+
 
 function getuser(res) {
     user.find(function (err, users) {
@@ -14,40 +17,13 @@ function getuser(res) {
     })
 }
 
+function isLoggedIn(req, res, next) {
+    if (req.isAuthenticated())
+        return next();
+    res.end('Not logged in');
+}
+
 module.exports = function (app, passport) {
-
-    passport.use(new LocalStrategy(
-        (email, pass, done) => {
-            user.findOne({ email: req.params.email }, function (err, result) {
-                if (result == null)
-                    return done(null, false)
-                else {
-                    if (result.password == req.params.pass)
-                        return done(null, result)
-                    else
-                        return done(null, false)
-                }
-            })
-        }
-    ))
-
-    passport.serializeUser(function (result, done) {
-        done(null, result.email)
-    })
-
-    passport.deserializeUser(function (email, done) {
-        if (username === user.username) {
-            return done(null, user)
-        }
-        return done(null)
-    })
-
-
-
-    //Home
-    app.get('/', (req, res) => {
-        res.render('index', { user: req.user });
-    });
 
     // create a new user
     app.post("/user/register", function (req, res) {
@@ -65,19 +41,22 @@ module.exports = function (app, passport) {
     })
 
     // Login
-    app.get("/user/login/:email/:pass", function (req, res) {
-        console.log("aaaaaaaaceferb")
-        user.findOne({ email: req.params.email }, function (err, result) {
-            if (result == null)
-                res.json({ "resNumber": -1 });
-            else {
-                if (result.password == req.params.pass)
-                    res.json({ "resNumber": 1, "user": result })
-                else
+    app.get("/user/login/:email/:pass", function (req, res, next) {
+        passport.authenticate('local', function(err, user, info) {
+            if (err)
+                return next(err);
+            if(!user)
+                return res.json({ "resNumber": -1 });
+            req.logIn(user, function(err) {
+                if (err)
                     res.json({ "resNumber": 0 });
-            }
-        })
-    });
+                if (!err)
+                    res.json({ "resNumber": 1, "user": result })
+                
+            });
+        })(req, res, next);
+    })
+  
 
     // getShipper by email
     app.get("/customer/getShipperByEmail/:email", function (req, res) {
