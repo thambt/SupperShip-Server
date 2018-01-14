@@ -161,6 +161,15 @@ module.exports = function (app, passport, io) {
         })
     })
 
+    // get shipper Bill: 
+    app.get("/shipper/getBill/:email", function (req, res) {
+        console.log(req)
+        bill.find({ emailShipper: req.params.email }, function (err, result) {
+            res.json({ "arrBill": result });
+            // console.log(result);
+        })
+    })
+
     //get Custom bill
     app.get("/custom/getBill/:email", function (req, res) {
         bill.find({ emailCustomer: req.params.email, status: {$gte: 0} }, function (err, result) {
