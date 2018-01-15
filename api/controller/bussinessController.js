@@ -289,7 +289,7 @@ module.exports = function (app, passport, io) {
     // shipper get my bill
     app.get("/shipper/getMyBill/:emailShipper", function (req, res) {
        // console.log("neame", req.params.id)
-        bill.find({ status: { $in : [2,3]}, emailShipper: req.params.emailShipper },
+        bill.find({ status: 2, emailShipper: req.params.emailShipper },
             function (err, result) {
                 if (result != null) {
                 res.json({ "status": true, "arrBill": result })
