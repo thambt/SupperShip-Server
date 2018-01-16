@@ -214,13 +214,13 @@ module.exports = function (io) {
 
         // shop accept shipper
         socket.on("shopAcceptShipper", function (idBill, time, emailShipper, emailShop, nameShop) {
-            //    console.log("shopAcceptShipper", emailShipper)
+                console.log("shopAcceptShipper", emailShipper)
             bill.findById(idBill, function (err, data) {
-                if (data != null) {
+                if (data != null) { 
                     user.findOne({ email: emailShipper }, function (err, userShipper) {
+                        console.log("getusser",userShipper)
                         if (err == null) {
                              socket.broadcast.emit("customerNoti", { "emailCustomer": data.emailCustomer })
-
                             var newNoti = {
                                 myEmail: emailShipper,
                                 nameActor: nameShop,
@@ -373,13 +373,7 @@ module.exports = function (io) {
                                 status: 7,
                                 time: time
                             };
-                             socket.broadcast.emit("shipperNoti", { "myEmail": data.emailShipper })
-                            user.findOneAndUpdate({ email: data.emailShipper }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
-                                function (err, data) {
-                                    console.log("finissh", data.email)
-                                   
-                                })
-                            var newNoti = {
+                             var newNotiShop = {
                                 myEmail: data.emailShop,
                                 nameActor: nameCustomer,
                                 emailActor: emailCustomer,
@@ -389,8 +383,14 @@ module.exports = function (io) {
                                 status: 7,
                                 time: time
                             };
-                             socket.broadcast.emit("shopNoti", { "myEmail": data.emailShop })
-                            user.findOneAndUpdate({ email: data.emailShop }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
+                             socket.broadcast.emit("shipperNoti", { "myEmail": data.emailShipper })
+                              socket.broadcast.emit("shopNoti", { "myEmail": data.emailShop })
+                            user.findOneAndUpdate({ email: data.emailShipper }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
+                                function (err, data) {
+                                    console.log("finissh", data.email)
+                                   
+                                })
+                            user.findOneAndUpdate({ email: newNotiShop.myEmail }, { $push: { listNoti: newNotiShop } }, { safe: true, upsert: true, new: true },
                                 function (err, data) {
                                     
                                 })
