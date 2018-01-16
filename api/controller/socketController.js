@@ -384,7 +384,7 @@ module.exports = function (io) {
                                 time: time
                             };
                              socket.broadcast.emit("shipperNoti", { "myEmail": data.emailShipper })
-                              socket.broadcast.emit("shopNoti", { "myEmail": data.emailShop })
+                              socket.broadcast.emit("shopNoti", { "emailShop":  newNotiShop.myEmail })
                             user.findOneAndUpdate({ email: data.emailShipper }, { $push: { listNoti: newNoti } }, { safe: true, upsert: true, new: true },
                                 function (err, data) {
                                     console.log("finissh", data.email)
